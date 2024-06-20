@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="parallax" style="background-image: url('/images/proposals.jpg')"><h1>Invoices .</h1></div>
+<div class="tables_container">
+<button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#create">Import Invoice</button>
+<!-- Create Modal -->
+<div class="modal fade" id="create" tabindex="-1" aria-labelledby="create" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <form id="import-inv-form" enctype=multipart/form-data method="post" action="/import-invoice">
+        <div class="modal-header">
+            <h5 class="modal-title" id="test">Import Invoice</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div id="import-form" class="col-10">
+                    <input type="text" hidden name="action_type" id="act_tt" />
+                    <textarea id="content_ii" name="htmlcontent" hidden></textarea>
+                    <label>Invoice Title</label>
+                    <input required type="text" class="form-control" required name="invoice_title" placeholder="Invoice title" />
+                    <label>Destinatary</label>
+                    <input required type="text" class="form-control" required name="email_destinatary" placeholder="Destinatary" />
+                    <label>Status</label>
+                    <select onchange="showFields()" class="form-select form-select-1" required name="inv_status" id="inv_status_ii">
+                        <option selected value="In Progress">Draft</option>
+                        <option value="Ready To Send">Ready To Send</option>
+                        <option value="Awaiting Payment">Awaiting Payment</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                    <label id="payment_date_lbl" style="display:none;">Payment Date</label>
+                    <input style="display:none;" type="date" class="form-control" name="payment_date_n" id="payment_date_ii" />
+                    <label>Total</label>
+                    <input required type="text" class="form-control" required name="inv_amount" placeholder="Amount" />
+                    <label>Due</label>
+                    <input required type="date" class="form-control" required name="due" id="due_ii" />
+                    <label>Image</label>
+                    <input required class="form-control" type="file" id="img_ii" name="img">
+                    <label>Invoice</label>
+                    <input required class="form-control" type="file" id="inv_ii" name="inv">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button id="only-save2" type="submit" class="btn btn-primary">Save</button>
+            <button id="save-and-send2" type="submit" class="btn btn-primary">Save and Send</button>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Contract Editors -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Editor</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" type="button" role="tab" aria-controls="templates" aria-selected="false">Templates</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab" aria-controls="table" aria-selected="false">Invoices</button>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="row">
+            <div class="col-auto">
+                <div class="dropdown show">
+                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dd" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Use Existent Draft or Template
+                    </a>
+                    <div class="dropdown-menu">
+                        <% records.forEach(function(record) { if(record.status == 'Draft' || record.status == 'Template'){ %>
+                            <a class="dropdown-item" href="javascript:loadInEditor(<%= record.id %>)">
+                            <textarea id="html_<%= record.id %>" name="content_<%= record.id %>" hidden><%= record.html_content %></textarea>
+                            <%= record.title %></a>
+                        <% } }); %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="dropdown show">
+                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dd" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Add Tax
+                    </a>
+                    <div class="dropdown-menu">
+                        <% taxes.forEach(function(record) { %>
+                            <a class="dropdown-item" href="javascript:addTax(<%= record.percentage %>, '<%= record.description %>')">
+                                <b><%= record.description %></b> <%= record.percentage %>%</a>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <form method="post" action="/update-template/invoice">
+                <input type="text" id="templ_id" name="template_id" hidden />
+                <input type="text" id="doc_path_i" name="doc_path_n" hidden />
+                <textarea id="updated_content_i" name="updated_content_n" hidden></textarea>
+                <button id="updt_template" type="submit" class="btn btn-light">Update</button>
+                </form>
+            </div>
+            <div class="col-auto"><button type="button" data-bs-toggle="modal" data-bs-target="#saveasnewinvoice" class="btn btn-light" id="save-as-new">Save as New Invoice</button></div>
+        </div>
+        <div class="row">
+            <!-- TinyMCE -->
+            <textarea id="tinymce_editor" name="tinymce_editor"></textarea>
+            <!-- TinyMCE -->
+        </div>
+    </div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <!-- CKEditor 5 -->
+        <div id="toolbar-container"></div>
+        <div id="editor"></div>
+        <script src="/js/ckeditor.js"></script>
+        <script>
+        DecoupledEditor
+            .create( document.querySelector( '#editor' ) )
+            .then( editor => {
+            // The toolbar needs to be explicitly appended.
+            document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+
+            window.editor = editor;
+            } )
+            .catch( error => {
+            console.error( 'There was a problem initializing the editor.', error );
+            } );
+        </script>
+        <!-- CKEditor 5 -->
+        <form class="row g-3" style="margin-top:5px;margin-left:5px;">
+            <div class="col-auto">
+                <input type="text" class="form-control" id="a" placeholder="Title">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" id="b" placeholder="Date">
+            </div>
+            <div class="col-auto">
+            <input type="text" class="form-control" id="c" placeholder="Email Destinatary">
+            </div>
+            <div class="col-auto">
+            <input type="text" class="form-control" id="d" placeholder="Status: Draft / Send">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" id="e" placeholder="Amount">
+            </div>
+            <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Save/Send New Invoice</button>
+            </div>
+        </form>    
+    </div>
+    <div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+        <div class="tables_container">
+            <button class="btn btn-primary btn-in-table" type="button" data-bs-toggle="modal" data-bs-target="#new_template1">Add new template</button>
+            <div class="modal fade" id="new_template1" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            <label>Add Template Image</label>
+                            <div class="mb-3"><input class="form-control" type="file" name="Image"/></div>
+                            <label>Add Template File</label>
+                            <div class="mb-3"><input class="form-control" type="file" name="Template"/></div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Create template from editor</label>
+                            </div>
+                            <button id="save" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Template</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% records.forEach(function(record) { if(record.status=='Template'){ %>
+                    <tr>
+                        <th scope="row"><%= record.id %></th>
+                        <td><img src="<%= record.img %>" width="200px" /></td>
+                        <td><a id="doc_path_<%= record.id %>" href="<%= record.document_path %>"><%= record.title %></a></td>
+                        <td>
+                            <button class="btn btn-primary btn-in-table" type="submit">Load In Editor</button>
+                            <button class="btn btn-primary btn-in-table" type="submit">Clone</button>
+                            <button class="btn btn-primary btn-in-table" type="submit">Remove</button>
+                        </td>
+                    </tr>
+                <%} }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
+    <div class="tables_container">
+        <button type="button" data-bs-toggle="modal" data-bs-target="#saveasnewinvoice" class="btn btn-light" id="save-as-new">New Invoice</button>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Image</th>
+                <th scope="col">Title</th>
+                <th scope="col">Document Path</th>
+                <th scope="col">Payment Status</th>
+                <th scope="col">Payment Date</th>
+                <th scope="col">Lead / Destinatary</th>
+                <th scope="col">Due</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Created</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% records.forEach(function(record) { 
+                console.log('start');
+                if(record.status != 'Template'){
+                if(record.payment_date){
+                    var p_date = record.payment_date.split('T');
+                    var time = p_date[1].split('.');
+                    console.log(p_date[0]+' '+time[0]);
+                }else{
+                    var p_date=['',''], time=['',''];
+                }
+                if(record.due){
+                    var due_I =  record.due.split('T');
+                    var time_due = due_I[1].split('.');
+                    //var time_dueII = time_due[1].split(',');
+                    console.log(due_I[0] + ' ' + time_due[0] + ' ');
+                }else{
+                    var due_I = ['',''], time_due = ['',''];
+                }
+                if(record.amount){
+                    var amount = Number(record.amount);
+                }else{
+                    var amount = 0.00;
+                } 
+                
+                var created_I = record.created.split('T');
+                var created_time = created_I[1].split('.');
+                console.log(created_I[0] + ' ' + created_time[0]);
+                var p_st = 'Pending', p_dt = '-';
+                if(record.payment_status==1){ p_st = 'Paid'; p_dt =  p_date[0]+' '+time[0]; }
+                %>
+                    <tr>
+                        <th scope="row"><%= record.id %></th>
+                        <td><img src="<%= record.img %>" width="150px" /></td>
+                        <td><%= record.title %></td>
+                        <td><a href="<%= record.document_path %>"><%= record.document_path %></a></td>
+                        <td><%= p_st %></td>
+                        <td><%= p_dt %></td>
+                        <td><a href="/lead/<%= record.destinatary %>"><%= record.destinatary %></a></td>
+                        <td><%= due_I[0] + ' ' + time_due[0] +' ' %></td> 
+                        <td><%= amount.toFixed(2) %></td>
+                        <td><%= created_I[0] + ' '+created_time[0] %></td>
+                        <td>
+                            <button class="btn btn-primary btn-in-table" type="submit">Edit</button>
+                            <button class="btn btn-primary btn-in-table" type="submit">Remove</button>
+                        </td>
+                    </tr>
+            <% } }); %>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="saveasnewinvoice" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="create-inv-form" enctype=multipart/form-data method="post" action="/create-invoice">
+        <div class="modal-header">
+          <h5 class="modal-title" id="test">Save as new invoice</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+                <div class="row">
+                    <div id="save-as-new-form" class="col-10">
+                        <input type="text" hidden name="action_type" id="act_t" />
+                        <textarea id="content_i" name="htmlcontent" hidden></textarea>
+                        <label>Invoice Title</label>
+                        <input required type="text" class="form-control" required name="invoice_title" placeholder="Invoice title" />
+                        <label>Destinatary</label>
+                        <input required type="text" class="form-control" required name="email_destinatary" placeholder="Destinatary" />
+                        <label>Status</label>
+                        <select onchange="showFields()" class="form-select form-select-1" required name="inv_status" id="inv_status_i">
+                            <option selected value="In Progress">Draft</option>
+                            <option value="Ready To Send">Ready To Send</option>
+                            <option value="Awaiting Payment">Awaiting Payment</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Overdue">Overdue</option>
+                        </select>
+                        <label id="payment_date_lbl" style="display:none;">Payment Date</label>
+                        <input style="display:none;" type="date" class="form-control" name="payment_date_n" id="payment_date_i" />
+                        <label>Total</label>
+                        <input required type="text" class="form-control" required name="inv_amount" placeholder="Amount" />
+                        <label>Due</label>
+                        <input required type="date" class="form-control" required name="due" id="due_i" />
+                        <label>Image</label>
+                        <input required class="form-control" type="file" id="img_i" name="img">
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button id="only-save" type="submit" class="btn btn-primary">Save</button>
+          <button id="save-and-send" type="submit" class="btn btn-primary">Save and Send</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+<%- include('../partials/scripts'); %>
+<script>
+var useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+tinymce.init({
+  selector: 'textarea#tinymce_editor',
+  plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+  imagetools_cors_hosts: ['picsum.photos'],
+  menubar: 'file edit view insert format tools table help',
+  toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+  toolbar_sticky: true,
+  autosave_ask_before_unload: true,
+  autosave_interval: '30s',
+  autosave_prefix: '{path}{query}-{id}-',
+  autosave_restore_when_empty: false,
+  autosave_retention: '2m',
+  image_advtab: true,
+  link_list: [
+    { title: 'My page 1', value: 'https://www.tiny.cloud' },
+    { title: 'My page 2', value: 'http://www.moxiecode.com' }
+  ],
+  image_list: [
+    { title: 'My page 1', value: 'https://www.tiny.cloud' },
+    { title: 'My page 2', value: 'http://www.moxiecode.com' }
+  ],
+  image_class_list: [
+    { title: 'None', value: '' },
+    { title: 'Some class', value: 'class-name' }
+  ],
+  importcss_append: true,
+  file_picker_callback: function (callback, value, meta) {
+    /* Provide file and text for the link dialog */
+    if (meta.filetype === 'file') {
+      callback('https://www.google.com/logos/google.jpg', { text: 'My text' });
+    }
+
+    /* Provide image and alt text for the image dialog */
+    if (meta.filetype === 'image') {
+      callback('https://www.google.com/logos/google.jpg', { alt: 'My alt text' });
+    }
+
+    /* Provide alternative source and posted for the media dialog */
+    if (meta.filetype === 'media') {
+      callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.google.com/logos/google.jpg' });
+    }
+  },
+  templates: [
+        { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
+        { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },
+        { title: 'New list with dates', description: 'New List with dates', content: '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>' }
+  ],
+  template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+  template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+  height: 600,
+  image_caption: true,
+  quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+  noneditable_noneditable_class: 'mceNonEditable',
+  toolbar_mode: 'sliding',
+  contextmenu: 'link image imagetools table',
+  skin: useDarkMode ? 'oxide-dark' : 'oxide',
+  content_css: useDarkMode ? 'dark' : 'default',
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+ });
+ $(document).on('change', '#updt_draft', function(event) {
+    var id = $('#updt_draft').val();
+    var mycontent = records[id].html_content;
+    if(!mycontent || mycontent=="" || mycontent=='<p><br data-mce-bogus="1"></p>'){
+        Swal.fire(
+        'The editor has some content?',
+        'If the editor is without any content. Nothing will be saved as the proposal would be empty. Please complete it first.',
+        'question'
+        );
+    }
+    console.log(mycontent); //.append();
+ });
+ $(document).on('click', '#updt_template', function(event){
+     console.log('update template');
+     var mycontent = tinymce.get("tinymce_editor").getContent();
+     if(!mycontent || mycontent=="" || mycontent=='<p><br data-mce-bogus="1"></p>'){
+        Swal.fire(
+        'The editor has some content?',
+        'If the editor is without any content. Nothing will be saved as the proposal would be empty. Please complete it first.',
+        'question'
+        );
+    }
+    document.getElementById('updated_content_i').innerHTML = mycontent;
+ });
+ function addTax(percent, desc){
+     console.log(percent);
+     console.log(desc);
+     tinymce.get("tinymce_editor").insertContent(desc + ' ' + percent + '%');
+ }
+ function showFields(){
+     console.log('show fields');
+    if(document.getElementById('inv_status_i').value=='Paid'){
+        $('#payment_date_i').show();
+        $('#payment_date_lbl').show();
+    }else{
+        $('#payment_date_i').hide();
+        $('#payment_date_lbl').hide();
+    }
+    if(document.getElementById('inv_status_ii').value=='Paid'){
+        $('#payment_date_ii').show();
+        $('#payment_date_lbl').show();
+    }else{
+        $('#payment_date_ii').hide();
+        $('#payment_date_lbl').hide();
+    }
+ };
+ $("#save-as-new").click(function(){
+     console.log("onclick jquery");
+     $('#save-as-new-form').show();
+     var mycontent = tinymce.get("tinymce_editor").getContent();
+     console.log(mycontent);
+     if(!mycontent || mycontent=="" || mycontent=='<p><br data-mce-bogus="1"></p>'){
+        Swal.fire(
+        'The editor has some content?',
+        'If the editor is without any content. Nothing will be saved as the proposal would be empty. Please complete it first.',
+        'question'
+        );
+    }
+     $('textarea#content_i').html(mycontent);
+ });
+ $("#only-save").click(function(){
+     $('#act_t').val('only-save');
+ });
+ $("#save-and-send").click(function(){
+     $('#act_t').val('save-and-send');
+ });
+ $("#only-save2").click(function(){
+     $('#act_tt').val('only-save');
+ });
+ $("#save-and-send2").click(function(){
+     $('#act_tt').val('save-and-send');
+ });
+ function loadInEditor(id){
+    var $ = function(id){return document.getElementById(id)};
+    console.log($('html_'+id).innerHTML);
+    console.log(document.getElementById('html_'+id).value);
+    var content = unescape($('html_'+id).value);
+    content = content.split('&lt;').join('<');
+    content = content.split('&gt;').join('>');
+    console.log(content);
+    tinymce.get("tinymce_editor").setContent(content);
+    document.getElementById('templ_id').value = id;
+    var doc_path = document.getElementById('doc_path_'+id).getAttribute('href');
+    document.getElementById('doc_path_i').value = doc_path;
+    document.getElementById('updated_content_i').innerHTML = tinymce.get("tinymce_editor").getContent();
+    //DecoupledEditor.editor.insertHtml(content);
+    //$('editor').appendChild(content);
+}
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

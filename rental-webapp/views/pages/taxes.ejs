@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="custom-head-page" style="background-image: url('/images/proposals-cut.jpg')"><h1>Taxes .</h1></div>
+<div class="tables_container">
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#create">Add Tax</button>
+        <div class="separator"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Percentage</th>
+                <th scope="col">Description</th>
+                <th scope="col">Enabled</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% records.forEach(function(record) { 
+                    var res = 'No'; if(record.status==1){ res = 'Yes';} %>
+                    <tr>
+                        <th id="id_<%= record.id %>" scope="row"><%= record.id %></th>
+                        <td id="perc_<%= record.id %>"><%= record.percentage %></td>
+                        <td id="desc_<%= record.id %>"><%= record.description %></td>
+                        <td id="status_<%= record.id %>"><%= res %></td>
+                        <td>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#edit" data-tax-id="<%= record.id %>">Edit</button>
+                            <% if(record.status==1){ %>
+                            <a class="btn btn-primary" href="/disable/tax/<%= record.id %>">Disable</a>
+                            <% }else{ %>
+                            <a class="btn btn-primary" href="/enable/tax/<%= record.id %>">Enable</a>
+                            <a class="btn btn-primary" href="/remove/tax/<%= record.id %>">Remove</a>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="create" tabindex="-1" aria-labelledby="create" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="create">New Tax</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/taxes">
+                        <div class="mb-3"><input type="text" class="form-control" required name="percentage" placeholder="Tax Percentage" /></div>
+                        <div class="mb-3"><input type="text" class="form-control" required name="description" placeholder="Description" /></div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="edit">Edit Tax</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/update/tax">
+                        <input type="text" hidden id="edit_tax_id" name="id" value="" />
+                        <div class="mb-3"><input id="edit_perc" type="text" class="form-control" required name="percentage" placeholder="Tax Percentage" value="" /></div>
+                        <div class="mb-3"><input id="edit_desc" type="text" class="form-control" required name="description" placeholder="Description" /></div>
+                        
+                        <button id="edit_action" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+</div>
+<%- include('../partials/scripts'); %>
+<script>
+    $('#edit').on('show.bs.modal', function(e){
+        var a = $(e.relatedTarget).data('tax-id');
+        var perc = $('#perc_'+a).text();
+        var desc = $('#desc_'+a).text();
+        $('#edit_perc').val(perc);
+        $('#edit_desc').val(desc);
+        $('#edit_tax_id').val(a);
+        //$("#edit_action").attr('href', '/update/tax/'+a);
+    });
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

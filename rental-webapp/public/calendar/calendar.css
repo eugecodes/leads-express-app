@@ -1,0 +1,116 @@
+/*
+*
+* ==========================================
+* CUSTOM UTIL CLASSES
+* ==========================================
+*
+*/
+.clearfix::after,
+.calendar ol::after {
+  content: "." !important;
+  display: block !important;
+  height: 0 !important;
+  clear: both !important;
+  visibility: hidden !important;
+}
+
+/* ================
+Calendar Styling */
+.calendar {
+  min-width: 375px !important;
+  position: relative !important;
+}
+.calendar a{
+  cursor: pointer !important;
+}
+.calendar.noselect {
+    -webkit-touch-callout: none !important; /* iOS Safari */
+    -webkit-user-select: none !important; /* Safari */
+    -khtml-user-select: none !important; /* Konqueror HTML */
+    -moz-user-select: none !important; /* Old versions of Firefox */
+    -ms-user-select: none !important; /* Internet Explorer/Edge */
+    user-select: none !important; /* Non-prefixed version, currently
+    supported by Chrome, Edge, Opera and Firefox */
+}
+.month-year-btn {
+  color: #444 !important;
+}
+.month-year {
+  width: 11rem !important;
+}
+.month, .year {
+  font-size: 1.5rem !important;
+}
+
+.initials {
+}
+@media (max-width: 550px) {
+  .initials {
+    position: relative !important;
+    display: inline-block !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    letter-spacing: 1ch !important; 
+    width: 1.9ch !important;
+  }
+}
+
+.calendar ol li {
+  float: left !important;
+  width: 14.28571% !important;
+}
+
+.calendar .day-names {
+  border-bottom: 1px solid #eee !important;
+  color: #444 !important;
+}
+
+.calendar .days { 
+  border-bottom: 1px solid #eee !important;
+}
+.calendar .days li {
+  min-height: 6rem !important;
+  cursor: pointer !important;
+}
+
+.calendar .days li .date {
+  margin-bottom: 0.5rem !important;
+}
+
+.calendar .days li .event {
+  font-size: 0.75rem !important;
+  padding: 0.4rem 0.6rem 0.4rem  0.8rem !important;
+  color: white !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  border-radius: 4rem !important;
+  margin: 0 1px 1px 0 !important;
+}
+
+.calendar .days li .event.span-2 {
+  width: 200% !important;
+}
+
+.calendar .days li .event.begin {
+  border-radius: 1rem 0 0 1rem !important;
+}
+
+.calendar .days li .event.end {
+  border-radius: 0 1rem 1rem 0 !important;
+}
+
+.calendar .days li .event.clear {
+  background: none !important;
+}
+
+.calendar .days li:nth-child(n+29) {
+  border-bottom: none !important;
+}
+
+.calendar .days li.outside .date  {
+  color: #ddd !important;
+}
+.calendar .days li.today .date  {
+  text-decoration: underline !important;
+}

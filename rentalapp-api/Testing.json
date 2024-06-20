@@ -1,0 +1,36 @@
+{
+    "/create-lead": {
+        "event_start":"2021-03-31 16:23:00.000000",
+        "event_end":"2021-03-31 18:23:00.000000",
+        "status":1,
+        "event_contacts":{"Contact One": {"Phone": "398929230", "Email": "mymail@mail.com", "Hours to contact": "From 8 AM to 5 PM", "Is primary contact": "Yes", "Home Phone": "929183089", "Address": "Street 210", "Alternative email": "mymail2@mail.com"},
+    "Contact Two": {"Phone": "1902320930123", "Email": "my2212ail@mail.com", "Hours to contact": "From 9 AM to 6 PM", "Is primary contact": "No", "Home Phone": "929183089", "Address": "Street 310", "Alternative email": "mymail3@mail.com"}},
+        "type_of_event":"Birthday Party",
+        "users_assigned":{"users": ["User1", "User2", "User3"]},
+        "users_to_be_notified":{"users": ["User1","User3"]},
+        "tags":{"tags": ["Party", "Single Day", "Billed Hourly"]},
+        "event_details":{"Description": "Some details go here"}
+    },
+    "/get-lead":"/get-lead/1",
+    "/update-event-date": {
+        "event_id": 1,
+        "event_start": "11/12/2021 13:00",
+        "event_end": "11/12/2021 15:00"
+    },
+    "/update-assigned-users": {
+        "event_id": 1,
+        "assigned_users": {"users": ["User8","User5"]}
+    },
+    "create-lead": {
+        "event_start": "2021-02-20",
+        "event_end": "2021-03-18",
+        "status": 3,
+        "event_contacts": { "Person A": { "Phone": 20939203099023, "Address": "Street B", "Email": "mayl@mail.test", "HoursToContact": "Monday to Friday"},  "Person B": { "Phone": 20939203099023, "Address": "Street B", "Email": "mayl@mail.test", "HoursToContact": "Monday to Friday"}},
+        "type_of_event": "Lunch",
+        "users_assigned": {"users":["A","B","C"]},
+        "users_to_be_notified": {"users":["A","B","C"]},
+        "tags":"short-event, lunchtime",
+        "event_details": "Lunchtime talk"
+    }
+    
+}

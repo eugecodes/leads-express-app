@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<script>
+    console.log('up');
+</script>
+<div class="parallax" style="background-image: url('/images/proposals.jpg')"><h1>Proposals .</h1></div>
+<!-- Contract Editors -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+<li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Editor</button>
+</li>
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" type="button" role="tab" aria-controls="templates" aria-selected="false">Templates</button>
+</li>
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab" aria-controls="table" aria-selected="false">Proposals</button>
+</li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <!-- TinyMCE -->
+            <div class="row g-3">
+                <div class="col-auto"><button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#SaveAsNewProposal" type="button">Save as New Proposal</button></div>
+                <div class="col-auto"><button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#SaveAsNewTemplate" type="button">Save as New Template</button></div>
+                <div class="col-auto" style="font-size:12px;color: #333;"><p style="margin-top: 1rem;">[Insert -> Insert Template and the list shows all the available proposals templates in the system]</p></div>
+            </div>
+        <!-- TinyMCE -->
+        <form method="post" action="/save-draft">
+          <textarea name="proposal_content_editor" id="full-featured-non-premium"></textarea>
+        </form>
+        <!-- TinyMCE -->
+    </div>
+    <div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+    <div class="alluses_container">  
+        <div class="tables_container">
+            <button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#AddNewTemplate" type="button"><i class="fas fa-plus custom-fa2"></i> Add new template</button>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Template</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% records.forEach(function(record) { if(record.status=='Template'){ 
+                    var content = record.html_content;
+                    %>
+                    <tr>
+                        <th scope="row"><%= record.id %></th>
+                        <td><img src="<%= record.img %>" width="200px" /></td>
+                        <td><a id="proposal_name" href="<%= record.file_path %>"><%= record.proposal %></a></td>
+                        <textarea id="html_<%= record.id %>" hidden><%= record.html_content %></textarea>
+                        <td>
+                            <a class="btn btn-primary btn-in-table" href="<%= record.file_path %>"><i class="fas fa-angle-right custom-fa2"></i> Open Original</a>
+                            <button class="btn btn-primary btn-in-table" type="button" onclick="loadInEditor(<%= record.id %>)"><i class="fas fa-clipboard custom-fa2"></i> Load In Editor</button>
+                            <button class="btn btn-primary btn-in-table" type="button" data-bs-id="<%= record.id %>" data-bs-toggle="modal" data-bs-target="#clone"><i class="fas fa-clone custom-fa2"></i> Clone</button>
+                            <a class="btn btn-primary btn-in-table" href="/remove-proposal/<%= record.id %>"><i class="fas fa-trash-alt custom-fa2"></i> Remove</a>
+                        </td>
+                    </tr>
+                <%} }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
+    <div class="tables_container">
+      <button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#AddNewProposal" type="button"><i class="fas fa-plus custom-fa2"></i> Add new proposal</button>
+        <table class="table">
+            <thead>
+              <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Image</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Lead</th>
+                  <th scope="col">Summary</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">File</th>
+                  <th scope="col">Tags</th>
+                  <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% records.forEach(function(record) { 
+            var proposal_date = record.proposal_date.split('T');
+            console.log(proposal_date[0]);
+            if(record.status != 'Template'){
+              var lead = record.proposal_lead.split('|');
+			      %>
+                <tr>
+                    <th scope="row"><%= record.id %></th>
+                    <td><img src="<%= record.img %>" width="100px" /></td>
+                    <td><%= proposal_date[0] %></td>
+                    <td><a href="/leads/<%= lead[0] %>"><%= lead[1] %></a></td><!-- record.proposal_lead -->
+                    <td><%= record.proposal %></td>
+                    <td><%= record.status %></td>
+                    <td><a href="<%= record.file_path %>"><%= record.file_path %></a></td>
+                    <td><%= record.tags %></td>
+                    <td>
+                        <button class="btn btn-primary btn-in-table" type="submit">Edit</button>
+                        <% if(record.status == 'Draft') { %>
+                          <a class="btn btn-primary btn-in-table" href="/change-status/proposal/1/<%= record.id %>">Change to Final Version</button>
+                        <% } if(record.status == 'Final Version'){ %>
+                          <a class="btn btn-primary btn-in-table" href="/change-status/proposal/0/<%= record.id %>">Change to Draft</button>
+                          <a class="btn btn-primary btn-in-table" href="/send/proposal/<%= record.id %>">Send</button>
+                        <% } %>
+                        <a class="btn btn-primary btn-in-table" href="/remove-proposal/<%= record.id %>"><i class="fas fa-trash-alt custom-fa2"></i> Remove</a>
+                    </td>
+                </tr>
+            <% } }); %>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="clone" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="CloneTemplate-title">Clone Template</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="clonetemplate" id="clonetemplatename" method="post" action="/clone-template">
+            <input class="form-control" type="text" hidden name="tobecloned_id" id="tobeclonedid" />
+            <label for="original_tobe_cloned">Proposal to be cloned</label>
+            <input type="text" class="form-control" disabled name="tobecloned_proposal" id="tobecloned" />
+            <label for="proposal_title">Clone Proposal Title</label>
+            <input class="form-control" type="text" name="proposal_title" id="proposal_title" />
+            <button type="submit" class="btn btn-light" id="save-as-new-template-btn">Clone</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="SaveAsNewTemplate" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="SaveAsNewTemplate-title">Save As New Template</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="saveasnewtemplate" name="saveasnewtemplate" method="post" enctype=multipart/form-data action="/save-as-new-template">
+              <input hidden type="date" name="proposal_date" id="proposal_date" value="9999-01-01" />
+              <label for="proposal_desc">Short Description</label>
+              <input class="form-control" type="text" name="proposal" id="proposal_desc" placeholder="Proposal Template Short Description" />
+              <input hidden type="text" name="status" id="proposal_status" value="Draft" />
+              <label for="proposaltags">Proposal Template Tags</label>
+              <input class="form-control" type="text" name="tags" data-role="tagsinput" id="proposaltags" placeholder="Tags" />
+              <label for="img_id">Image for Template</label>
+              <input class="form-control" type="file" name="img" id="img_id" placeholder="" />
+              <textarea hidden name="htmlcontent" id="proposalcontent"></textarea>
+              <button type="submit" class="btn btn-light" id="save-as-new-template-btn">Save New Template</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade" id="SaveAsNewProposal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="SaveAsNewProposal-title">Save As New Proposal</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" enctype=multipart/form-data action="/save-as-new-proposal">
+            <label>Proposal Short Description</label>
+            <input type="text" class="form-control" name="proposal_title"  id="title" placeholder="" />
+            <label>Status</label>
+            <select class="form-select form-select-2" required name="status2" id="status_id">
+              <option selected value="Draft">Draft</option>
+              <option value="Final Version">Ready to be sent</option>
+              <option value="Send">Send</option>
+              <option value="Sent">Already Sent</option>
+            </select>
+            <label>Proposal for Lead:</label>
+            <select class="form-select form-select-2" required name="leads" id="lead_id">
+              <option name="none" value="none" selected>Lead</option>
+              <% if(!leads){ var leads = [];}
+              leads.forEach(function(record) { %>
+              <option name="lead_<%= record.id %>" value="<%= record.short_description %>"><%= record.id %>|<%= record.short_description %></option>
+              <% }); %>
+            </select>
+            <label>* Proposal content will be taken from the editor, and saved from this form, to be later sent if according to the current status</label>
+            <label for="proposaltags">Proposal Template Tags</label>
+            <input class="form-control" type="text" name="tags2" data-role="tagsinput" id="proposaltags2" placeholder="Tags" />
+            <label for="img_id">Image for Template</label>
+            <input required class="form-control" type="file" name="img2" id="img_id2" />
+            <textarea hidden name="htmlcontent2" id="proposalcontent2"></textarea>
+            <button type="submit" class="btn btn-light" id="save-as-new-proposal-btn">Save New Proposal</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade" id="AddNewTemplate" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AddNewTemplate-title">Add New Template</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>  
+<%- include('../partials/scripts'); %>
+<script>
+var mytemplates = [
+    {title: 'Events Proposal Template', description: 'An HTML custom template, completely customizable', url: '/templates/proposals/template3.html'},
+    {title: 'Project/System Proposal Template', description: 'An HTML custom template, completely customizable', url: '/templates/proposals/template2.html'},
+    {title: 'Project Proposal Template', description: 'An HTML custom template, completely customizable', url: '/templates/proposals/template1.html'},
+];
+var useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+tinymce.init({
+  selector: 'textarea#full-featured-non-premium',
+  plugins: ['print preview paste importcss searchreplace autolink autosave save',
+   'directionality code visualblocks visualchars fullscreen image link media template codesample',
+    'table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern', 
+    'noneditable help charmap quickbars emoticons advcode contextmenu powerpaste tinymcespellchecker a11ychecker'],
+  imagetools_cors_hosts: ['picsum.photos'],
+  menubar: 'file edit view insert format tools table help',
+  toolbar: 'save undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl | advcode spellchecker code a11ycheck',
+  toolbar_sticky: true,
+  autosave_ask_before_unload: true,
+  autosave_interval: '30s',
+  autosave_prefix: '{path}{query}-{id}-',
+  autosave_restore_when_empty: false,
+  autosave_retention: '2m',
+  image_advtab: true,
+  link_list: [
+    { title: 'My page 1', value: 'https://www.tiny.cloud' },
+    { title: 'My page 2', value: 'http://www.moxiecode.com' }
+  ],
+  image_list: [
+    { title: 'My page 1', value: 'https://www.tiny.cloud' },
+    { title: 'My page 2', value: 'http://www.moxiecode.com' }
+  ],
+  image_class_list: [
+    { title: 'None', value: '' },
+    { title: 'Some class', value: 'class-name' }
+  ],
+  powerpaste_allow_local_images: true,
+  powerpaste_word_import: 'prompt',
+  powerpaste_html_import: 'prompt',
+  
+  spellchecker_language: 'en',
+  spellchecker_dialog: true,
+  importcss_append: true,
+  file_picker_callback: function (callback, value, meta) {
+    /* Provide file and text for the link dialog */
+    if (meta.filetype === 'file') {
+      callback('https://www.google.com/logos/google.jpg', { text: 'My text' });
+    }
+
+    /* Provide image and alt text for the image dialog */
+    if (meta.filetype === 'image') {
+      callback('https://www.google.com/logos/google.jpg', { alt: 'My alt text' });
+    }
+
+    /* Provide alternative source and posted for the media dialog */
+    if (meta.filetype === 'media') {
+      callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.google.com/logos/google.jpg' });
+    }
+  },
+  templates: mytemplates,
+  template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+  template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+  height: 600,
+  image_caption: true,
+  quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+  noneditable_noneditable_class: 'mceNonEditable',
+  toolbar_mode: 'sliding',
+  contextmenu: 'link image imagetools table',
+  skin: useDarkMode ? 'oxide-dark' : 'oxide',
+  content_css: useDarkMode ? 'dark' : 'default',
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+  /*save_onsavecallback: function () {  
+      var content = tinymce.activeEditor.getContent();
+      console.log('saved by the editor ' + content);
+
+    }*/
+ });
+
+ function loadInEditor(id){
+    var $ = function(id){return document.getElementById(id)};
+    var content = unescape($('html_'+id).innerHTML);
+    content = content.split('&lt;').join('<');
+    content = content.split('&gt;').join('>');
+    console.log(content);
+    tinymce.get("full-featured-non-premium").setContent(content);
+    //DecoupledEditor.editor.insertHtml(content);
+    //$('editor').appendChild(content);
+}
+var modal1 = document.getElementById('SaveAsNewTemplate');
+var modal2 = document.getElementById('SaveAsNewProposal');
+var texta = document.getElementById('proposalcontent');
+var text2 = document.getElementById('proposalcontent2');
+modal1.addEventListener('show.bs.modal', function (event) {
+  var mycontent = tinymce.get("full-featured-non-premium").getContent({format: 'raw'});
+  if(!mycontent || mycontent=="" || mycontent=='<p><br data-mce-bogus="1"></p>'){
+    Swal.fire(
+      'The editor has some content?',
+      'If the editor is without any content. Nothing will be saved as the proposal would be empty. Please complete it first.',
+      'question'
+    );
+  }
+  console.log(mycontent);
+  texta.innerHTML = mycontent;
+});
+modal2.addEventListener('show.bs.modal', function (event) {
+  var mycontent = tinymce.get("full-featured-non-premium").getContent({format: 'raw'});
+  if(!mycontent || mycontent=="" || mycontent=='<p><br data-mce-bogus="1"></p>'){
+    Swal.fire(
+      'The editor has some content?',
+      'If the editor is without any content. Nothing will be saved as the proposal would be empty. Please complete it first.',
+      'question'
+    );
+  }
+  console.log(mycontent);
+  text2.innerHTML = mycontent;
+});
+var modal2 = document.getElementById('clone');
+modal2.addEventListener('show.bs.modal', function(event) {
+  var button = event.relatedTarget;
+  var proposal_id = button.getAttribute('data-bs-id');
+  var proposal_name = document.getElementById('proposal_name').innerHTML;
+  console.log(proposal_id);
+  var modalNameInput = modal2.querySelector('.modal-body input#tobecloned');
+  modalNameInput.value = proposal_name;
+  var modalIdInput = modal2.querySelector('.modal-body input#tobeclonedid');
+  modalIdInput.value = proposal_id;
+});
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

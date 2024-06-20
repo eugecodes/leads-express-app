@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+ 
+<!-- Contract Editors -->
+<div class="parallax" style="background-image: url('/images/proposals.jpg')"><h1>Contracts .</h1></div>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+<li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Editor</button>
+</li>
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" type="button" role="tab" aria-controls="templates" aria-selected="false">Templates</button>
+</li>
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab" aria-controls="table" aria-selected="false">Manage Contracts</button>
+</li>
+</ul>
+<div class="tab-content" id="myTabContent">
+<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">   
+    <!-- TinyMCE -->
+    <div class="row g-3">
+      <div class="col-auto"><button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#SaveAsNewContract" type="button">Save as New Contract</button></div>
+      <div class="col-auto"><button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#SaveAsNewTemplate" type="button">Save as New Template</button></div>
+      <div class="col-auto" style="font-size:12px;color: #333;"><p style="margin-top: 1rem;">[Insert -> Insert Template and the list shows all the available contract templates in the system]</p></div>
+    </div>
+    <textarea id="full-featured-non-premium"></textarea>
+    <!-- TinyMCE -->
+</div>
+<div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+  <div class="alluses_container">
+    <button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#AddNewTemplate" type="button"><i class="fas fa-plus custom-fa2"></i> Add new template</button>  
+    <table class="table">
+      <thead>
+      <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Image</th>
+          <th scope="col">Template</th>
+          <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% records.forEach(function(record) { if(record.status=='Template'){ 
+          var content = record.html_content;
+          %>
+          <tr>
+              <th scope="row"><%= record.id %></th>
+              <td><img src="<%= record.img %>" width="200px" /></td>
+              <td><a id="proposal_name" href="<%= record.document_path %>"><%= record.title %></a></td>
+              <textarea id="html_<%= record.id %>" hidden><%= record.html_content %></textarea>
+              <td>
+                  <a class="btn btn-primary btn-in-table" href="<%= record.file_path %>"><i class="fas fa-angle-right custom-fa2"></i> Open Original</a>
+                  <button class="btn btn-primary btn-in-table" type="button" onclick="loadInEditor(<%= record.id %>)"><i class="fas fa-clipboard custom-fa2"></i> Load In Editor</button>
+                  <button class="btn btn-primary btn-in-table" type="button" data-bs-id="<%= record.id %>" data-bs-toggle="modal" data-bs-target="#clone"><i class="fas fa-clone custom-fa2"></i> Clone</button>
+                  <a class="btn btn-primary btn-in-table" href="/remove-proposal/<%= record.id %>"><i class="fas fa-trash-alt custom-fa2"></i> Remove</a>
+              </td>
+          </tr>
+      <%} }); %>
+      </tbody>
+  </table>
+  </div>
+</div>
+<div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
+  <div class="tables_container">
+    <button class="btn btn-primary btn-in-table" data-bs-toggle="modal" data-bs-target="#AddNewContract" type="button"><i class="fas fa-plus custom-fa2"></i> Add new contract</button>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">Destinatary</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Signed Date</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% console.log(records);
+          records.forEach(function(record) {
+            console.log("contracts");
+            console.log(record);
+            var str_date = record.date.split('T');
+            var str_time = str_date[1].split('.');
+            str_time = str_time[0].split(':');
+            var str_signeddate = record.signed_date.split('T');
+            var str_signedtime = str_signeddate[1].split('.');
+            str_signedtime = str_signedtime[0].split(':');
+            if(record.status!='Template'){
+            %>
+            <tr>
+                <th scope="row"><%= record.id %></th>
+                <td><a href="<%= record.document_path %>"><%= record.title %></a></td>
+                <td><%= str_date[0] + ' ' + str_time[0]+':'+str_time[1] %></td>
+                <td><%= record.status %></td>
+                <td><%= record.destinatary %></td>
+                <td><%= record.amount %></td>
+                <td><%= str_signeddate[0] + ' ' + str_signedtime[0]+':'+str_signedtime[1] %></td>
+                <td>
+                    <button class="btn btn-primary btn-in-table" type="button">Edit</button>
+                    <button class="btn btn-primary btn-in-table" type="button">Archive</button>
+                </td>
+            </tr>
+        <% } }); %>
+        </tbody>
+      </table>
+    </div>
+</div>
+</div>
+  
+<%- include('../partials/scripts'); %>
+<script>
+var useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+tinymce.init({
+  selector: 'textarea#full-featured-non-premium',
+  plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+  imagetools_cors_hosts: ['picsum.photos'],
+  menubar: 'file edit view insert format tools table help',
+  toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+  toolbar_sticky: true,
+  autosave_ask_before_unload: true,
+  autosave_interval: '30s',
+  autosave_prefix: '{path}{query}-{id}-',
+  autosave_restore_when_empty: false,
+  autosave_retention: '2m',
+  image_advtab: true,
+  link_list: [
+    { title: 'My page 1', value: 'https://www.tiny.cloud' },
+    { title: 'My page 2', value: 'http://www.moxiecode.com' }
+  ],
+  image_list: [
+    { title: 'My page 1', value: 'https://www.tiny.cloud' },
+    { title: 'My page 2', value: 'http://www.moxiecode.com' }
+  ],
+  image_class_list: [
+    { title: 'None', value: '' },
+    { title: 'Some class', value: 'class-name' }
+  ],
+  importcss_append: true,
+  file_picker_callback: function (callback, value, meta) {
+    /* Provide file and text for the link dialog */
+    if (meta.filetype === 'file') {
+      callback('https://www.google.com/logos/google.jpg', { text: 'My text' });
+    }
+
+    /* Provide image and alt text for the image dialog */
+    if (meta.filetype === 'image') {
+      callback('https://www.google.com/logos/google.jpg', { alt: 'My alt text' });
+    }
+
+    /* Provide alternative source and posted for the media dialog */
+    if (meta.filetype === 'media') {
+      callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.google.com/logos/google.jpg' });
+    }
+  },
+  templates: [
+        { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
+    { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },
+    { title: 'New list with dates', description: 'New List with dates', content: '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>' }
+  ],
+  template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+  template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+  height: 600,
+  image_caption: true,
+  quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+  noneditable_noneditable_class: 'mceNonEditable',
+  toolbar_mode: 'sliding',
+  contextmenu: 'link image imagetools table',
+  skin: useDarkMode ? 'oxide-dark' : 'oxide',
+  content_css: useDarkMode ? 'dark' : 'default',
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+ });
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="parallax" style="background-image: url('/images/proposals.jpg')">
+<h1>Venues .</h1>
+</div>
+<div class="tables_container">
+        <button id="newVenue" name="newVenue" type="button" class="btn btn-primary" data-bs-title='New' data-bs-toggle="modal" data-bs-target="#NewEdit">Add Venue</button>
+        <div class="separator"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Venue</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Leads</th>
+                <th scope="col">Bookings</th>
+                <th scope="col">Actions</th>
+                <th scope="col">Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% records.forEach(function(record) { var st = "On-Hold";
+                    if(record.status==1) { st = "Active";}
+                    %>
+                    <tr>
+                        <th scope="row"><%= record.id %></th>
+                        <td><%= record.venue %></td>
+                        <td><%= record.description %></td>
+                        <td><%= st %></td>
+                        <td>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#SeeNotes">Notes</button>
+                        </td>
+                        <td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#SeeLeads">See Leads</button></td>
+                        <td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#SeeBookings">See Bookings</button></td>
+                        <td>
+                            <button id="editVenue" name="editVenue" class="btn btn-primary" type="button" data-bs-img="<%= record.image %>" data-bs-title="Edit" data-bs-id="<%= record.id %>" data-bs-venue="<%= record.venue %>" data-bs-desc="<%= record.description %>" data-bs-toggle="modal" data-bs-target="#NewEdit">Edit</button>
+                            <% if(record.status==1) { %>
+                                <a class="btn btn-primary" href="/disable-venue/<%= record.id %>/0">Disable</a>
+                            <% }else if(record.status==0) { %>
+                                <a class="btn btn-primary" href="/enable-venue/<%= record.id %>/1">Enable</a>
+                                <a class="btn btn-primary" href="/remove-venue/<%= record.id %>">Remove</a>
+                            <% } %>
+                        </td>
+                        <td><img src=<%= record.image %> width="90px" style="border-radius:200px;" /></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="NewEdit" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" enctype="multipart/form-data" action="/venues">
+                <div class="modal-header">
+                <h5 class="modal-title">New Venue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> 
+                <div class="modal-body">
+                        <input id="venueid" name="venue_id" type="text" hidden value="" />
+                        <div class="mb-3">
+                            <label>Venue</label>
+                            <input id="venuename" class="form-control" required name="venue" placeholder="Venue" />
+                        </div>
+                        <div class="mb-3">
+                            <div class="row">
+                            <div class="mb-1">
+                                <img id="displayimg" src="" style="border-radius:200px;max-width:90px;" />
+                            </div>
+                            <label>Image</label>
+                            <div class="mb-2">
+                                <input id="venueimg" class="form-control" type="file" name="venue_img" placeholder="Replace...">
+                            </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Short Descrition</label>
+                            <input id="venuedesc" class="form-control" required name="description" />
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="SeeLeads" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="edit">Leads</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>All leads shown here are or have been related to this venue. Can be an actual lead that is on process for booking this venue, or a past lead that booked this venue before.</p>
+                    <table class="table">
+                        <thead>
+                            <th>Description</th>
+                            <th>Lead Details</th>
+                            <th>Date Captured</th>
+                            <th>Status</th>
+                            <th>Type of Event</th>
+                            <th>Event Start</th>
+                            <th>Event End</th>
+                            <th>Contacts</th>
+                            <th>Assigned to this lead</th>
+                            <th>To be notified about this lead</th>
+                            <th>Tags</th>
+                        </thead>
+                        <tbody>
+                            <td colspan="11">Working on this</td>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="SeeNotes" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="edit">Notes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <a class="btn btn-primary" href="/add-a-note">Add a Note</a>
+                    <a class="btn btn-primary" href="/see-archived-notes">See Archived Notes</a>
+                    <table class="table">
+                        <thead>
+                            <th>Archive After</th>
+                            <th>Remainder</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody>
+                            <!--<td colspan="5">
+                                No records yet.
+                            </td>-->
+                            <td>Lead 04 Changes Status to Succesfull Finished</td>
+                            <td>Every Hour</td>
+                            <td>Check Venue renovations and pending messages</td>
+                            <td>Active</td>
+                            <td>
+                                <a class="btn btn-primary" href="/edit-note">Edit</a>
+                                <a class="btn btn-primary" href="/disable-note">Disable</a>
+                                <a class="btn btn-primary" href="/archive-note">Archive</a>
+                                <a class="btn btn-primary" href="/remove-note">Remove</a>
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="SeeBookings" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="edit">Bookings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Present or past bookings associated to this venue.</p>
+                    <table class="table">
+                        <thead>
+                            <th>Description</th>
+                            <th>Booking Type</th>
+                            <th>From</th>
+                            <th>Until</th>
+                            <th>Repeats?</th>
+                            <th>Participants</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                            <th>Tags</th>
+                        </thead>
+                        <tbody>
+                            <td colspan="9">Working on this</td>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+  </div>
+<%- include('../partials/scripts'); %>
+<script>
+    var modal = document.getElementById('NewEdit');
+    modal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var modalTitle = modal.querySelector('.modal-title');
+    var modalBodyBtn = modal.querySelector('.modal-footer button');
+    var modalIdInput = modal.querySelector('.modal-body input#venueid');
+    var modalVenueInput = modal.querySelector('.modal-body input#venuename');
+    var modalDescInput = modal.querySelector('.modal-body input#venuedesc');
+    var modalImg = modal.querySelector('.modal-body img');
+    // Extract info from data-bs-* attributes
+    var title = button.getAttribute('data-bs-title');
+    console.log(title);
+    if(title=='Edit'){
+        var venue = button.getAttribute('data-bs-venue');
+        var desc = button.getAttribute('data-bs-desc');
+        var venueid = button.getAttribute('data-bs-id');
+        var img = button.getAttribute('data-bs-img');
+        modalIdInput.value = venueid;
+        modalVenueInput.value = venue;
+        modalDescInput.value = desc;
+        modalImg.src = img;
+        modalBodyBtn.textContent = 'Update';
+    }
+    if(title=='New'){
+        modalIdInput.value = '';
+        modalVenueInput.value = '';
+        modalDescInput.value = '';
+        modalImg.src = '';
+        modalBodyBtn.textContent = 'Add';
+    }
+    // Update the modal's content
+    modalTitle.textContent = title + ' Venue';
+    });
+
+    /*var modal = document.getElementById('SeeBookings');
+    modal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+
+    });*/
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

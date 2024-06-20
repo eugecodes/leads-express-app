@@ -1,0 +1,239 @@
+<html>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap" rel="stylesheet">
+    <script src="../../js/fabric.min.js"></script> 
+    <style>
+        body {
+            /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8f8f8;
+            font-size: 14px;
+        }
+        .container {
+            margin: 20px;
+            padding: 20px;
+        }
+        .row {
+            width: 100%;
+            display: block;
+        }
+        .col10 {
+            width: 10%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .col20 {
+            width: 20%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .center {
+            text-align: center;
+        }
+        .col30 {
+            width: 38%;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .col60 {
+            width: 60%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .logo {
+            width: 200px;
+        }
+        .title {
+            font-size: 34px;
+        }
+        ul {
+            list-style: none;
+        }
+        .card {
+            background-color: #fff;
+            color: #333;
+            border-radius: 20px;
+            box-shadow: 5px 5px 5px #CCC;
+            padding: 30px;
+        }
+        .card2 {
+            background-color: #fff;
+            color: #333;
+            padding: 30px;
+            margin: 10px;
+        }
+        .header {
+            background-color:#0d6efd;
+            color: #fff;
+        }
+        .slogan {
+            font-size: 12px;
+            background-color: rgba(255,255,255,0.5);
+            padding: 7px;
+            margin: 5px;
+        }
+        .signature {
+            border-radius: 5px; 
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #ccc;
+        }
+        input {
+            border-radius: 5px;
+            padding: 5px;
+            border: 0px;
+            box-shadow: 1px 1px 1px #ccc;
+            margin: 5px;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 14px;
+        }
+        .clear {
+            background-color: #fff;
+            border: 0px;
+            box-shadow: 1px 1px 1px #ccc;
+            padding: 7px;
+            border-radius: 5px;
+        }
+        thead, tbody {
+            text-align: left;
+        }
+        th {
+            border-bottom: 2px #ccc solid;
+        }
+        th, tr, td {
+            padding: 5px;
+        }
+        .pre-header {
+            background: url("../../images/templates/proposals/events3.jpg");
+            background-size: 100% auto;
+            height: 300px;
+        }
+        .img-square {
+            background: url("../../images/templates/proposals/events1.jpg");
+            background-size: auto 100%;
+            height: 100%;
+        }
+    </style>
+    <div class="container">
+        <div class="row pre-header"></div>
+        <div class="row header">
+            <div class="col10"><img src="../../images/templates/proposals/logo-sample3.png" width="100px" /></div>
+            <div class="col20 title center">Event Proposal <span class="slogan">A phrase or something to add in the proposal title</span></div>
+            <div class="col20">
+                <ul>
+                    <li>Address 123, City, State</li>
+                    <li>+12919828912</li>
+                    <li>email@sample.email</li>
+                </ul>
+            </div>
+            <div class="col20">
+                    <ul>
+                        <li>Prepared By</li>
+                        <li>Author Name Surname</li>
+                    </ul>
+            </div>
+            <div class="col20">
+                <ul>
+                    <li>Prepared For</li>
+                    <li>Someone or Company</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="col60">
+                    <h3>Offer for [Client, Name]</h3>
+                    <p>Thanks for reaching out to [Sender.Company] regarding your upcoming event.</p>
+                    <p>This is the first step in having your special event take place in [Venue].</p>
+                    <p>This form will give us the information we need to determine if your event is feasible and can proceed through. The objective is to protect the public’s health, safety and welfare by ensuring that events are compatible in size and type of use with the site;</p>
+                    <p>impacts on neighbors and others are managed; adequate services are provided for the event and the event do not interfere with the place regulations; mechanisms are available for cost recovery and use charges, while not unduly impacting the viability of events.</p> 
+                    <p>Please complete this two page interactive proposal and return it to the address above mentioned. We do our best to contact you within five business days regarding the status of the event. Once the proposal is agreed upon, then we can begin to plan for the event to take place at the site accorded.</p>
+                    <h3>Event Location</h3>
+                    <p>Designated venue: [Venue]</p>
+                    <h3>Event Information</h3>
+                    <p>Event Type: [Formal / Informal]</p>
+                    <p>Number of expected attendees: [Number]</p>
+                    <p>Rain is acceptable: [Yes/No]</p>
+                    <p>Event Start Date: [year/month/day]</p>
+                    <p>Event Start Time: [hour]</p>
+                    <p>Event End Date: [year/month/day]</p>
+                    <p>Event End Time: [hour]</p>
+                    <p>Budget: [From $0 to $100]</p>
+                    <h3>Event Requisites</h3>
+                    <p>[Requisites]</p>
+                    <h3>Event Description and/or Comments</h3>
+                    <p>[Details]</p>
+                </div>
+                <div class="col30 img-square"></div>
+                <h3>Proposed Terms and Costs</h3>
+                    <p>..........</p>
+                <div class="row">
+                    <div class="col20">
+                        <div class="card2">
+                            <h3>[Sender, Company]</h3>
+                            <p>[Signer Name, Surname]</p>
+                            <canvas id="sender_company" class="signature" width="200" height="100"></canvas>
+                            <input type="date" class="input-date-signature" /><button id="clear-canvas" class="clear">Clear</button>
+                        </div>
+                    </div>
+                    <div class="col20">
+                        <div class="card2">
+                            <h3>[Client, Company]</h3>
+                            <p>[Signer Name, Surname]</p>
+                            <canvas id="client_company" class="signature" width="200" height="100"></canvas>
+                            <input type="date" class="input-date-signature" /><button id="clear-canvas2" class="clear">Clear</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+        var $ = function(id){return document.getElementById(id)};
+
+        var canvas = this.__canvas = new fabric.Canvas('sender_company', { isDrawingMode: true });
+        var canvas2 = this.__canvas = new fabric.Canvas('client_company', { isDrawingMode: true });
+
+        fabric.Object.prototype.transparentCorners = false;
+
+        var drawingModeEl = 'Pencil',
+            drawingOptionsEl = '',
+            drawingColorEl = '#333',
+            drawingShadowColorEl = '',
+            drawingLineWidthEl = 1,
+            drawingShadowWidth = 0,
+            drawingShadowOffset = 0,
+            clearEl = $('clear-canvas'),
+            clearEl2 = $('clear-canvas2');
+
+        clearEl.onclick = function() { canvas.clear() };
+        clearEl2.onclick = function() { canvas2.clear() };
+
+        if (canvas.freeDrawingBrush) {
+            canvas.freeDrawingBrush.color = '#333';
+            canvas.freeDrawingBrush.source = canvas.freeDrawingBrush.getPatternSrc.call(this);
+            canvas.freeDrawingBrush.width = 1;
+            canvas.freeDrawingBrush.shadow = new fabric.Shadow({
+            blur: 0,
+            offsetX: 0,
+            offsetY: 0,
+            affectStroke: true,
+            color: '#fff',
+            });
+        }
+        if (canvas2.freeDrawingBrush) {
+            canvas2.freeDrawingBrush.color = '#333';
+            canvas2.freeDrawingBrush.source = canvas.freeDrawingBrush.getPatternSrc.call(this);
+            canvas2.freeDrawingBrush.width = 1;
+            canvas2.freeDrawingBrush.shadow = new fabric.Shadow({
+            blur: 0,
+            offsetX: 0,
+            offsetY: 0,
+            affectStroke: true,
+            color: '#fff',
+            });
+        }
+        })();
+    </script>
+</html>

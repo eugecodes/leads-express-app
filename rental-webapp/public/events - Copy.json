@@ -1,0 +1,60 @@
+{
+  "monthly": [
+    {
+      "id": 1,
+      "title": "Books Gallery",
+      "type": "Test Event",
+      "datetime_from": "2021-6-8",
+      "datetime_to": "2021-6-11",
+      "starttime": "12:00",
+      "endtime": "2:00",
+      "color": "#ccc",
+      "url": "/bookings/3"
+    },
+    {
+      "id": 5,
+      "title": "New Lake",
+      "type": "Test Event",
+      "datetime_from": "2021-6-8",
+      "datetime_to": "2021-6-8",
+      "starttime": "14:00",
+      "endtime": "18:00",
+      "color": "#ccc",
+      "url": "/bookings/4"
+    },
+    {
+      "id": 2,
+      "title": "Testing Path",
+      "type": "Test Event",
+      "datetime_from": "2021-6-17",
+      "datetime_to": "",
+      "starttime": "12:00",
+      "endtime": "2:00",
+      "color": "#ccc",
+      "url": "/appointments/1"
+    },
+    {
+      "id": 3,
+      "title": "White and Blue",
+      "type": "Test Event",
+      "datetime_from": "2021-6-22",
+      "datetime_to": "",
+      "starttime": "12:00",
+      "endtime": "2:00",
+      "color": "#ccc",
+      "url": "/appointments/2"
+    },
+    {
+      "id": 4,
+      "title": "Booking Lead EFG",
+      "type": "Test Event",
+      "datetime_from": "2021-6-22",
+      "datetime_to": "",
+      "starttime": "3:00",
+      "endtime": "7:00",
+      "color": "#ccc",
+      "url": "/appointments/3"
+    }
+
+  ]
+}

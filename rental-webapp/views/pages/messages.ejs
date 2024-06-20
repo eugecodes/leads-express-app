@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="custom-head-page" style="background-image: url('/images/proposals-cut.jpg')"><h1>Messages .</h1></div>
+<div class="tables_container">
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#create-send">New Message</button>
+        <div class="separator"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Date Received</th>
+                <th scope="col">From</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Content</th>
+                <th scope="col">Lead</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% records.forEach(function(record) { 
+                    var str_date = record.message_date.split('T');
+                    var str_time = str_date[1].split('.');
+                    str_time = str_time[0].split(':');
+
+                    var related = record.related_to.split(',');
+                    var lead = [], contact = [];
+                    /*for(var f=0;f<related.length;f++){
+                        if(related[f]=='leads'){
+                            lead = related[f+1];
+                        }
+                        if(related[f]=='contact'){
+                            contact = related[f+1];
+                        }
+                    }
+                    console.log(related);*/
+                    %>
+                    <tr>
+                        <th id="id_<%= record.id %>" scope="row"><%= record.id %></th>
+                        <td id="date_<%= record.id %>"><%= str_date[0] + ' ' + str_time[0]+':'+str_time[1] %></td>
+                        <td id="from_<%= record.id %>"><%= record.from %></td>
+                        <td style="display:none" id="to_<%= record.id %>"><%= record.to %></td>
+                        <td id="subj_<%= record.id %>"><%= record.message_subject %></td>
+                        <td id="msg_<%= record.id %>"><%= record.message_body %></td>
+                        <td id="leads_<%= record.id %>"><%= related[0] %></td>
+                        <td id="contac_<%= record.id %>"><%= related[1] %></td>
+                        <td id="status_<%= record.id %>"><%= record.status %></td>
+                        <td>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#see-send" data-id="<%= record.id %>">See Message</button>
+                            <% if(record.status=='Received' || record.status=='Sent'){ %>
+                            <a class="btn btn-primary" href="/archive-message/<%= record.id %>">Archive</a>
+                            <% }
+                            
+                            if(record.status=='Archived'){ %>
+                            <a class="btn btn-primary" href="/move-to-inbox/<%= record.id %>">Move back to Inbox</a>
+                            <a class="btn btn-primary" href="/remove-message/<%= record.id %>">Remove</a>
+                            <% } 
+                            
+                            if(record.status=='Draft'){ %>
+                            <a class="btn btn-primary" href="/send-message/<%= record.id %>">Send</a>
+                            <% }
+                            
+                            if(record.status=='Received'){ %>
+                            <a class="btn btn-primary" href="/send-answer/<%= record.id %>">Send answer</a>
+                            <a class="btn btn-primary" href="/book-appointment/<%= record.id %>">Book an appointment</a>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="create-send" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="edit">See Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/send-message">
+                        <div class="mb-3 row">
+                            <input type="text" hidden id="msg_id" name="id" value="" />
+                            <div class="col"><input id="to" type="text" class="form-control" required name="to_email" placeholder="To" /></div>
+                            <div class="col"><input id="to" type="text" class="form-control" required name="cc_email" placeholder="CC" /></div>
+                        </div>
+                        <div class="mb-3">
+                            <input id="subject_msg" type="text" class="form-control" required name="subject" placeholder="Subject" />
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col"><input id="contact" type="text" class="form-control" required name="contact_" placeholder="Contact" /></div>
+                            <div class="col"><input id="lead" type="text" class="form-control" required name="lead_" placeholder="Lead" /></div>
+                        </div>
+                        <div class="mb-3"><textarea class="form-control" id="msg_body" message="body">* To be repleaced with Editor</textarea></div>
+                        <button id="edit_action" class="btn btn-primary">Send</button>
+                        <button id="edit_action" class="btn btn-primary">Send Message to All Lead Contacts</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="modal fade" id="see-send" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="edit">See Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/update-message">
+                        <div class="mb-3 row">
+                            <input type="text" hidden id="msg_id" name="id"/>
+                            <div class="col"><input id="date_received1" readonly type="text" class="form-control" required name="date_receiv1" placeholder="Date Received" /></div>
+                            <div class="col"><input id="from1" readonly type="text" class="form-control" required name="from_email1" placeholder="From" /></div>
+                            <div class="col"><input id="to1" readonly type="text" class="form-control" required name="to_email1" placeholder="To" /></div>
+                        </div>
+                        <div class="mb-3">
+                            <input id="subject_msg1" readonly type="text" class="form-control" required name="subject1" placeholder="Subject" />
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col"><input id="contact1" readonly type="text" class="form-control" required name="contact_1" placeholder="Contact" /></div>
+                            <div class="col"><input id="lead1" readonly type="text" class="form-control" required name="lead_1" placeholder="Lead" /></div>
+                        </div>
+                        <div class="mb-3"><textarea readonly class="form-control" id="msg_body1" name="body1">* To be repleaced with Editor</textarea></div>
+                        <button type="button" id="" class="btn btn-primary">Send Automatic Message</button>
+                        <button type="button" id="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-send">Reply</button>
+                        <button type="button" id="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-send">Send Message to All Lead Contacts</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+</div>
+<%- include('../partials/scripts'); %>
+<script>
+    $('#see-send').on('show.bs.modal', function(e){
+        var a = $(e.relatedTarget).data('id');
+        var b = $('#date_'+a).text();
+        var c = $('#from_'+a).text();
+        var d = $('#subj_'+a).text();
+        var e = $('#msg_'+a).text();
+        var f = $('#leads_'+a).text();
+        var g = $('#contac_'+a).text();
+        var h = $('#to_'+a).text();
+        console.log("b "+b+" c "+c," d "+d+" e "+e+" f "+f+" g "+g+" h "+h);
+        $('#date_received1').val(b);
+        $('#from1').val(c);
+        $('#to1').val(h);
+        $('#subject_msg1').val(d);
+        $('#msg_body1').val(e);
+        $('#contact1').val(g);
+        $('#lead1').val(f);
+        //$("#edit_action").attr('href', '/update/tax/'+a);
+    });
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

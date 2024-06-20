@@ -1,0 +1,63 @@
+/* By API
+function(req, res){
+    fetch(endpoint+'/get-all-contracts', {method: 'GET', headers: {'Authorization': 'Bearer ' + req.session.user, 'Content-Type': 'application/json'}}).then(resp => resp.json())
+        .then(records => {
+            res.render('pages/contracts',  {records: records.lead});
+        });
+}
+*/
+/* By API
+var records = {id: 0, fullname: 'Fullname', email: 'email', phone: '', address: '', contact_hours: '', active: 0}; // Safe start
+fetch(endpoint+'/get-all-contacts', {method: 'GET', headers: {'Authorization': 'Bearer ' + req.session.user, 'Content-Type': 'application/json'}}).then(resp => resp.json())
+.then(records => {
+    console.log(records);
+    res.render('pages/leads', {records: records.lead});
+});*/
+
+/*
+function (req, res) {
+    var records = {id: 0, fullname: 'Fullname', user: 'user', email: 'email', phone: '102901929012'}; // Safe start
+    //records = getLeads();
+    res.render('pages/users', {records: records.lead});
+    fetch(endpoint+'/get-all-users', {method: 'GET', headers: {'Authorization': 'Bearer ' + req.session.user, 'Content-Type': 'application/json'}}).then(resp => resp.json())
+    .then(records => {
+        console.log(records);
+        res.render('pages/users', {records: records.lead});
+    });
+}
+
+function (req, res) {
+    var records = {id: 0, venue: 'First example row', status: 1, image: '/images/Screenshot_1.png'}; // Safe start
+    fetch(endpoint+'/get-all-venues', {method: 'GET', headers: {'Authorization': 'Bearer ' + req.session.user, 'Content-Type': 'application/json'}}).then(resp => resp.json())
+    .then(records => {
+        console.log(records);
+        res.render('pages/venues', {records: records.lead});
+    });
+}
+
+function(req, res) {
+    fetch(endpoint+'/get-all-bookings', {method: 'GET', headers: {'Authorization': 'Bearer ' + req.session.user, 'Content-Type': 'application/json'}}).then(resp => resp.json())
+    .then(records => {
+        /*fs.writeFile('events.json', records.lead, (err) => {
+            if (err) throw err; 
+            console.log('Events saved!');
+        });*/
+        console.log(records.lead);
+        // crear links para related_to -> al lead, y para participants -> al/ a los contact
+        res.render('pages/bookings',  {records: records.lead});
+    });
+}
+
+function(req, res) {
+    fetch(endpoint+'/get-booking/'+req.params.id, {method: 'GET', headers: {'Authorization': 'Bearer ' + req.session.user, 'Content-Type': 'application/json'}}).then(resp => resp.json())
+    .then(records => {
+        console.log(records.lead);
+        if(records.lead.message == 'jwt expired'){
+            req.session.destroy();
+            res.redirect('/login');
+        }
+        // crear links para related_to -> al lead, y para participants -> al/ a los contact
+        res.render('pages/bookings',  {records: records.lead});
+    });
+}
+*/

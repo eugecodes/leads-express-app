@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="custom-head-page" style="background-image: url('/images/taxes-cut.jpg')"><h1>Team .</h1></div>
+<div class="tables_container">
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal" id="new-user"><i class="fas fa-user-plus custom-fa2"></i> Add User</button>
+        <div class="separator"></div>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col"><i class="fas fa-id-badge custom-fa2"></i></th>
+                <th scope="col">Fullname</th>
+                <th scope="col">User</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% records.forEach(function(record) { %>
+                    <tr>
+                        <th scope="row"><%= record.id %></th>
+                        <td><%= record.fullname %></td>
+                        <td><%= record.user %></td>
+                        <td><%= record.email %></td>
+                        <td><%= record.phone %></td>
+                        <td>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" 
+                            data-bs-target="#exampleModal" id="edit-user" data-bs-id="<%= record.id %>" data-bs-pass="<%= record.password %>"
+                            data-bs-fullname="<%= record.fullname %>" data-bs-user="<%= record.user %>" data-bs-email="<%= record.email %>" data-bs-phone="<%= record.phone %>"><i class="fas fa-user-edit custom-fa2"></i></button>
+                            <a class="btn btn-primary" href="/remove-user/<%= record.id %>"><i class="fas fa-user-minus custom-fa2"></i></a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="new-edit-form" method="post" action="">
+                        <input hidden id="id_i" name="id_n" />
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enabled_i" name="enabled_n" checked>
+                            <label id="chk_lbl" class="form-check-label">User Enabled</label>
+                        </div>
+                        <div class="mb-3"><input class="form-control" required id="fullname_i" name="fullname_n" placeholder="Fullname" /></div>
+                        <div class="mb-3"><input class="form-control" required id="user_i" name="user_n" placeholder="Username" /></div>
+                        <div class="mb-3"><input class="form-control" type="password" required id="pass_i" name="pass_n" placeholder="Password" /></div>
+                        <div class="mb-3"><input class="form-control" required id="email_i" name="email_n" placeholder="Email" /></div>
+                        <div class="mb-3"><input class="form-control" required id="phone_i" name="phone_n" placeholder="Phone" /></div>
+                        <button id="save-newedit" type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+</div>
+<%- include('../partials/scripts'); %>
+<script>
+    var modal = document.getElementById('exampleModal')
+    modal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var modalTitle = modal.querySelector('.modal-title');
+    var id_input = modal.querySelector('#id_i'), name_input = modal.querySelector('#fullname_i'), user_input = modal.querySelector('#user_i'),
+        pass_input = modal.querySelector('#pass_i'), email_input = modal.querySelector('#email_i'), phone_input = modal.querySelector('#phone_i');
+    if(button.id=='new-user'){
+        modalTitle.textContent = 'New User';
+        modal.querySelector('#save-newedit').textContent = 'Create User';
+        modal.querySelector('#new-edit-form').setAttribute('action','/create-user');
+        id_input.value='', name_input.value='', user_input.value='', pass_input.value='', phone_input.value='', email_input.value='';
+    }else{
+        modalTitle.textContent = 'Edit User';
+        modal.querySelector('#new-edit-form').setAttribute('action','/update-user');
+        var id = button.getAttribute('data-bs-id'), name = button.getAttribute('data-bs-fullname'), user = button.getAttribute('data-bs-user'),
+        email = button.getAttribute('data-bs-email'), phone = button.getAttribute('data-bs-phone'), pass = button.getAttribute('data-bs-pass');
+        id_input.value = id; name_input.value = name; user_input.value = user; email_input.value = email; phone_input.value = phone; pass_input.value = pass; 
+        modal.querySelector('#save-newedit').textContent = 'Update User';
+    }
+});
+$(document).ready(function(){
+  $('#enabled_i').on('click',function(){
+    if($('input[id="enabled_i"]:checked').length > 0){  
+        console.log("entered here");
+        $('#chk_lbl').text('User Enabled');
+    }else{
+        $('#chk_lbl').text('User Disabled');
+    }
+  });          
+});
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

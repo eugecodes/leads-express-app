@@ -1,0 +1,203 @@
+<html>
+<style>
+body {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.inv-template-header {
+    background-color: #ccc;
+    color: #FFF;
+    display: block;
+    width: 100%;
+}
+.inv-template-body {
+    width: 100%;
+    display: block;
+}
+.inv-template-footer {
+    width: 100%;
+    background-color: #ccc;
+    color: #FFF;
+    display: block;
+}
+.row {
+    width: 100%;
+    display: block;
+    padding: 10px;
+}
+.col30 {
+    width: 30%;
+    display: inline-block;
+    padding: 20px;
+    vertical-align: middle;
+}
+.col20 {
+    width: 24%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.inv-template-title {
+    font-size: 40px;
+    padding: 20px;
+}
+.little-row {
+    display: block;
+    padding: 5px;
+    font-weight: 100;
+}
+.logo, .inv-template-logo {
+    width: 200px;
+}
+.padding20 {
+    padding: 20px;
+}
+.padding10 {
+    padding: 10px;
+}
+.little {
+    background: rgba(255,255,255,0.5);
+    color: #fff;
+    font-size: 24px;
+    padding: 5px;
+}
+.inv-template-total {
+    background-color: #ccc;
+    padding: 20px;
+    color: #333;
+}
+table, thead, tbody, th, tr, td {
+    padding: 10px;
+}
+thead, th {
+    background: #ccc;
+    color: #fff;
+    font-weight: 100;
+}
+tbody, tr, td {
+    font-weight: 100;
+}
+h3, h2 {
+    font-weight: 200;
+}
+h4 {
+    font-weight: 400;
+}
+.tax {
+    margin: 0px;
+    background: transparent;
+    color: #333;
+    padding-left: 0px !important;
+}
+.tax thead th {
+    background: transparent;
+    color: #333;
+    text-align: left;
+    padding-left: 0px !important;
+    font-size: 12px;
+}
+.totals {
+    display: inline-flex;
+    width: 200px;
+}
+.total {
+    border-top: #333 3px solid;
+}
+.terms {
+    border-left: 3px solid #ccc;
+    color: #333;
+    width: 60%;
+}
+.extend-t {
+    width: 98%;
+    background-color: #eee;
+}
+</style>
+<div class="inv-template-header">
+    <div class="col20">
+        <div class="inv-template-logo padding20"><img src="../../images/login.jpg" class="logo" /></div>
+    </div>
+    <div class="col20 middle">
+        <div class="inv-template-title">
+            <div><span class="little">Manatee</span></div>
+            Invoice <span class="inv-template-number">001</span>
+        </div>
+    </div>
+    <ul class="col20 middle">
+        <li class="little-row">Address</li>
+        <li class="little-row">Email</li>
+        <li class="little-row">Website</li>
+    </ul>
+    <div class="col20 middle">
+        <div class="little-row">City</div>
+        <div class="little-row">State</div>
+        <div class="little-row">CP 0000</div>
+    </div>
+</div>
+<div class="inv-template-body">
+    <div class="col30">
+        <h3>Billed To</h3>
+        <div class="little-row">Company</div>
+        <div class="little-row">Address, Email, Website</div>
+        <div class="little-row">City, State, CP 0000</div>
+    </div>
+    <div class="col30">
+        <div class="little-row">
+            <h4>Invoice Number</h4>
+            00001
+        </div>
+        <div class="little-row">
+            <h4>Date of Issue</h4>
+            2021-03-10
+        </div>
+    </div>
+    <div class="col30">
+        <div class="inv-template-total"><h3>Total</h3> $<span>000.1</span></div>
+    </div>
+    <div class="row">
+        <table class="extend-t">
+            <thead>
+                <th>Description</th>
+                <th>Cost/Rate</th>
+                <th>Amount</th>
+            </thead>
+            <tbody>
+                <td>Sample 01</td>
+                <td>15.5</td>
+                <td>150</td>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col30 terms">
+            <h3>Invoice Terms</h3>
+            <p>Conditions... Goods... etc</p>
+        </div>
+        <div class="col30">
+            <div class="subtotal">
+                <div class="totals"><h3>Subtotal</h3></div>
+                <div class="totals">1.000</div>
+            </div>
+            <div class="tax">
+                <h3>Tax</h3>
+                <table class="tax">
+                    <thead class="tax">
+                        <th>Concept</th>
+                        <th>% Percentage</th>
+                        <th>$ Amount</th>
+                    </thead>
+                    <tbody class="tax">
+                        <tr class="tax">
+                            <td class="tax">Invoice Template</td>
+                            <td class="tax">1</td>
+                            <td class="tax"><span>0.0003</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="inv-template-total">
+                <div class="totals"><h3>Total</h3></div>
+                <div class="totals">1.100</div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

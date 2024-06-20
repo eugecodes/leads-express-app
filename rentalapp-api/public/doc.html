@@ -1,0 +1,1605 @@
+<html lang="en" dir="ltr" class="no-js">
+<head>
+    <meta charset="utf-8" />
+    <title>[API Documentation]</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+    .pre-custom{
+        background: #eee;
+        border-left: 5px solid #0d6efd;
+        border-radius: 5px;
+        box-shadow: 1px 1px 2px;
+    }
+    .manatee_endpoints li {
+        margin-bottom: 5px;
+        margin-top:5px;
+    }
+    .manatee_endpoints {
+        list-style-type: none;
+    }
+    .manatee_endpoints li .card {
+        border-bottom: 10px;
+    }
+    .info {
+        font-size: 13px;
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+    <nav class="py-2 bg-light border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+            <li class="nav-item"><a href="#enpointsdetail" class="nav-link link-dark px-2">Endpoints Short List</a></li>
+            </ul>
+        </div>
+        </nav>
+        <header class="py-3 mb-4 border-bottom">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <a id="overview-tab" href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+                <span class="fs-4">Manatee API</span>
+            </a>
+        </div>
+        </header>
+        <div class="container">
+                <ul class="manatee_endpoints">
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#systemusers" role="button" aria-expanded="false" aria-controls="systemusers">System Users</a>
+                    </li>
+                    <div class="card"><div class="card-body">This is a group of api endpoints that manage the administration of the system users.</div></div>
+                    <!-- endpoints -->
+                    <div class="collapse" id="systemusers">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#register" role="button" aria-expanded="false" aria-controls="register">/register</a>
+                                <span class="info">It creates a new user for the system. It isn't for leads only for system users.</span>
+                            </div>
+                        </div>
+                        <div class="collapse" id="register">
+                            <pre class="pre-custom">
+                                POST http://<host>/register HTTP/1.1
+                                Content-Type: application/json
+                                    
+                                {
+                                    "fullname": FULL_NAME,
+                                    "user": USERNAME,
+                                    "password":PASSWORD,
+                                    "email": EMAIL,
+                                    "phone": PHONE_NUMBER
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#login" role="button" aria-expanded="false" aria-controls="login">/login</a>
+                                <span class="info">It's the user authentication, after validated the user credentials, it returns a token, that will be needed for every new operation with the api.</span>
+                            </div>
+                        </div>
+                        <div class="collapse" id="login">
+                            <pre class="pre-custom">
+                                POST http://<host>/login HTTP/1.1
+                                Content-Type: application/json
+                                
+                                {
+                                    "user": USERNAME,
+                                    "password": PASSWORD
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-user" role="button" aria-expanded="false" aria-controls="get-user">/get-user</a>
+                                <span class="info">Returns the user details, such as name, email, phone, maybe avatar later.</span>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-user">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-user HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#leads" role="button" aria-expanded="false" aria-controls="leads">Leads</a>
+                    </li>
+                        <div class="card"><div class="card-body">This group of endpoints manage everything about Leads.</div></div>
+                        <div class="collapse" id="leads">
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#create-lead" role="button" aria-expanded="false" aria-controls="create-lead">/create-lead</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="create-lead">
+                                <pre class="pre-custom">
+                                    POST http://<host>/create-lead HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                        
+                                    {
+                                        "event_start": EVENT_START,
+                                        "event_end": EVENT_END,
+                                        "status": STATUS,
+                                        "event_contacts": EVENT_CONTACTS,
+                                        "type_of_event": TYPE_OF_EVENT,
+                                        "users_assigned": USERS_ASSIGNED,
+                                        "users_to_be_notified": USERS_TO_BE_NOTIFIED,
+                                        "event_details": EVENT_DETAILS
+                                    }
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#get-lead" role="button" aria-expanded="false" aria-controls="get-lead">/get-lead/:id</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="get-lead">
+                                <pre class="pre-custom">
+                                    GET http://<host>/get-lead/<id> HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#get-all-leads" role="button" aria-expanded="false" aria-controls="get-all-leads">/get-all-leads/</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="get-all-leads">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-leads HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#update-event-date" role="button" aria-expanded="false" aria-controls="update-event-date">/update-event-date</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="update-event-date">
+                                <pre class="pre-custom">
+                                    POST http://<host>/update-event-date HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                        
+                                    {
+                                        "event_id": EVENT_ID,
+                                        "event_start": EVENT_START,
+                                        "event_end": EVENT_END
+                                    }
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#update-assigned-users" role="button" aria-expanded="false" aria-controls="update-assigned-users">/update-assigned-users</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="update-assigned-users">
+                                <pre class="pre-custom">
+                                    POST http://<host>/update-assigned-users HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                        
+                                    {
+                                        "event_id": EVENT_ID,
+                                        "assigned_users": ASSIGNED_USERS
+                                    }
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#notify" role="button" aria-expanded="false" aria-controls="notify">/update-users-tobe-notified</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="notify">
+                                <pre class="pre-custom">
+                                    POST http://<host>/update-users-tobe-notified HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                        
+                                    {
+                                        "event_id": EVENT_ID,
+                                        "users_tobe_notified": USERS_TO_BE_NOTIFIED
+                                    }
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#update-event-status" role="button" aria-expanded="false" aria-controls="update-event-status">/update-event-status</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="update-event-status">
+                                <pre class="pre-custom">
+                                    POST http://<host>/update-event-status HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                        
+                                    {
+                                        "event_id": EVENT_ID,
+                                        "event_status": EVENT_STATUS
+                                    }
+                                </pre>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <a class="btn" data-toggle="collapse" href="#update-event-details" role="button" aria-expanded="false" aria-controls="update-event-details">/update-event-details</a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="update-event-details">
+                                <pre class="pre-custom">
+                                    POST http://<host>/update-event-details HTTP/1.1
+                                    Content-Type: application/json
+                                    Authorization: OAuth 2.0 JWT token
+                                        
+                                    {
+                                        "event_id": EVENT_ID,
+                                        "event_details": EVENT_DETAILS
+                                    }
+                                </pre>
+                            </div>
+                        </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#leadcontact" role="button" aria-expanded="false" aria-controls="leadcontact">Lead Contact</a>
+                    </li>
+                    <div class="card"><div class="card-body">This group of endpoints is for managing the users / contacts of every lead and booking.</div></div>
+                    <div class="collapse" id="leadcontact">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#add-contact" role="button" aria-expanded="false" aria-controls="add-contact">/add-contact</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="add-contact">
+                            <pre class="pre-custom">
+                                POST http://<host>/add-contact HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "fullname": FULL_NAME,
+                                    "email": EMAIL,
+                                    "phone": PHONE,
+                                    "address": ADDRESS,
+                                    "contact_hours": CONTACT_HOURS,
+                                    "active": ACTIVE
+                                }
+
+                                Example Request
+
+                                {
+                                    "fullname":"Nombre de Fantasia",
+                                    "email":"micorreo@gmail.com",
+                                    "phone":"23912923489032",
+                                    "address":"Los saltos y brincos 344",
+                                    "contact_hours": { "preferred_time": "Monday to Sunday 8 am to 7 pm", "only_available_time":"Monday 3pm", "days_out_of_office":"", "holidays":"" },
+                                    "active":0
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-contact" role="button" aria-expanded="false" aria-controls="update-contact">/update-contact</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-contact">
+                            <pre class="pre-custom">
+                                POST http://<host>/update-contact HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "fullname": FULL_NAME,
+                                    "email": EMAIL,
+                                    "phone": PHONE,
+                                    "address": ADDRESS,
+                                    "contact_hours": CONTACT_HOURS,
+                                    "active": ACTIVE,
+                                    "id": ID
+                                }
+                                Sample request
+                                {
+                                    "fullname":"Nombre de Fantasia",
+                                    "email":"micorreo@gmail.com",
+                                    "phone":"993810930192",
+                                    "address":"Los saltos y brincos 344",
+                                    "contact_hours": { "preferred_time": "Monday to Sunday 8 am to 7 pm" },
+                                    "active":1,
+                                    "id":1
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-contact" role="button" aria-expanded="false" aria-controls="get-contact">/get-contact/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-contact">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-contact/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                Param: ID
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-contacts" role="button" aria-expanded="false" aria-controls="get-all-contacts">/get-all-contacts/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-contacts">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-contacts HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#bookings" role="button" aria-expanded="false" aria-controls="bookings">Bookings / Calendar</a>
+                    </li>
+                    <div class="card"><div class="card-body">Everything regarding events, bookings and the calendar.</div></div>
+                    <div class="collapse" id="bookings">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#add-booking" role="button" aria-expanded="false" aria-controls="add-booking">/add-booking</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="add-booking">
+                            <pre class="pre-custom">
+                                POST http://<host>/add-booking HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "booking_type": BOOKING_TYPE,
+                                    "when_booking_start": WHEN_BOOKING_START,
+                                    "when_booking_end": WHEN_BOOKING_END,
+                                    "title": TITLE,
+                                    "repeats": REPEATS,
+                                    "place_of_meeting": PLACE_OF_MEETING,
+                                    "related_to":LEAD,
+                                    "participants": PARTICIPANTS,
+                                    "status": STATUS,
+                                    "booking_details": BOOKING_DETAILS
+                                }
+                                
+                                Sample Request
+                                {
+                                    "booking_type":"Party",
+                                    "when_booking_start": "2021-04-12 13:30:35",
+                                    "when_booking_end": "2021-04-12 18:00:08",
+                                    "title":"Event for lead company Best",
+                                    "repeats":"Every monday",
+                                    "place_of_meeting":"Venue 3, Showroom 5",
+                                    "related_to":"lead 455",
+                                    "participants":"[contact 1, contact 3, contact 7]",
+                                    "status":1,
+                                    "booking_details":"Something here"
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-booking" role="button" aria-expanded="false" aria-controls="update-booking">/update-booking</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-booking">
+                            <pre class="pre-custom">
+                                POST http://<host>/add-booking HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "booking_type": BOOKING_TYPE,
+                                    "when_booking_start": WHEN_BOOKING_START,
+                                    "when_booking_end": WHEN_BOOKING_END,
+                                    "title": TITLE,
+                                    "repeats": REPEATS,
+                                    "place_of_meeting": PLACE_OF_MEETING,
+                                    "participants": PARTICIPANTS,
+                                    "status": STATUS,
+                                    "booking_details": BOOKING_DETAILS,
+                                    "id": ID
+                                }
+                                Sample Request
+                                {
+                                    "booking_type":"Party",
+                                    "when_booking_start": "2021-04-12 13:30:35",
+                                    "when_booking_end": "2021-04-12 18:00:08",
+                                    "title":"Event for lead company Best",
+                                    "repeats":"Every monday",
+                                    "place_of_meeting":"Venue 3, Showroom 5",
+                                    "related_to":"lead 455",
+                                    "participants":"[contact 1, contact 3, contact 7]",
+                                    "status":1,
+                                    "booking_details":"Something here",
+                                    "id":1
+                                }
+                            </pre>
+                        </div>
+                        <!--Item-->
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-booking" role="button" aria-expanded="false" aria-controls="get-booking">/get-booking/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-booking">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-booking/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <!--Item-->
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-bookings" role="button" aria-expanded="false" aria-controls="get-all-bookings">/get-all-bookings/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-bookings">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-bookings HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#invoices" role="button" aria-expanded="false" aria-controls="invoices">Invoices</a>
+                    </li>
+                    <div class="card"><div class="card-body">Invoices creation, edition, sending, payments status.</div></div>
+                    <div class="collapse" id="invoices">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#add-invoice" role="button" aria-expanded="false" aria-controls="add-invoice">/add-invoice</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="add-invoice">
+                            <pre class="pre-custom">
+                                POST http://<host>/add-invoice HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "title": TITLE,
+                                    "doc_path": DOC_PATH,
+                                    "payment_status": PAYMENT_STATUS,
+                                    "payment_date": PAYMENT_DATE,
+                                    "destinatary": DESTINATARY,
+                                    "due": DUE,
+                                    "amount": AMOUNT
+                                }
+                                Sample Request
+                                {
+                                    "title": "My Invoice 2021",
+                                    "doc_path": "invoice_2021.pdf",
+                                    "payment_status": 0,
+                                    "payment_date": "2021-03-12",
+                                    "destinatary": "client_0202",
+                                    "due": "2022-02-12",
+                                    "amount": 120.4
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-invoice" role="button" aria-expanded="false" aria-controls="update-invoice">/update-invoice</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-invoice">
+                            <pre class="pre-custom">
+                                POST http://<host>/update-invoice HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "title": TITLE,
+                                    "doc_path": DOC_PATH,
+                                    "payment_status": PAYMENT_STATUS,
+                                    "payment_date": PAYMENT_DATE,
+                                    "destinatary": DESTINATARY,
+                                    "due": DUE,
+                                    "amount": AMOUNT,
+                                    "id": ID
+                                }
+                                Sample Request
+                                {
+                                    "title": "My Invoice 2021",
+                                    "doc_path": "invoice_2021.pdf",
+                                    "payment_status": 0,
+                                    "payment_date": "2021-03-12",
+                                    "destinatary": "client_0202",
+                                    "due": "2022-02-12",
+                                    "amount": 120.4,
+                                    "id":1
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-invoice" role="button" aria-expanded="false" aria-controls="get-invoice">/get-invoice/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-invoice">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-invoice/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-invoices" role="button" aria-expanded="false" aria-controls="get-all-invoices">/get-all-invoices</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-invoices">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-invoices HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#contracts" role="button" aria-expanded="false" aria-controls="contracts">Contracts</a>
+                    </li>
+                    <div class="card"><div class="card-body">Contracts metadata can be saved in this group of endpoints or listed and saved elsewhere.</div></div>
+                    <div class="collapse" id="contracts">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#add-contract" role="button" aria-expanded="false" aria-controls="add-contract">/add-contract</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="add-contract">
+                            <pre class="pre-custom">
+                                POST http://<host>/add-contract HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "title": TITLE,
+                                    "date": DATE,
+                                    "status": STATUS,
+                                    "destinatary": DESTINATARY,
+                                    "amount": AMOUNT,
+                                    "doc_path": DOC_PATH,
+                                    "signed_date": SIGNED_DATE
+                                }
+                                Sample Request
+                                {
+                                    "title": "Week long event ID 24",
+                                    "date": "2021-03-30",
+                                    "status": {"Signed": "Yes"},
+                                    "destinatary": "testing@mail.com",
+                                    "amount": 300,
+                                    "doc_path": "contract2399103.pdf",
+                                    "signed_date": "2021-04-13"
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-contract" role="button" aria-expanded="false" aria-controls="update-contract">/update-contract</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-contract">
+                            <pre class="pre-custom">
+                                POST http://<host>/update-contract HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "title": TITLE,
+                                    "date": DATE,
+                                    "status": STATUS,
+                                    "destinatary": DESTINATARY,
+                                    "amount": AMOUNT,
+                                    "doc_path": DOC_PATH,
+                                    "signed_date": SIGNED_DATE,
+                                    "id": ID
+                                }
+                                Sample Request
+                                {
+                                    "title": "Week long event ID 24",
+                                    "date": "2021-03-30",
+                                    "status": {"Signed": "Yes"},
+                                    "destinatary": "testing@mail.com",
+                                    "amount": 258,
+                                    "doc_path": "contract2399103.pdf",
+                                    "signed_date": "2020-04-13",
+                                    "id":1
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-contract" role="button" aria-expanded="false" aria-controls="get-contract">/get-contract/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-contract">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-contract/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-contracts" role="button" aria-expanded="false" aria-controls="get-all-contracts">/get-all-contracts/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-contracts">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-contracts HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#communications" role="button" aria-expanded="false" aria-controls="communications">Communications</a>
+                    </li>
+                    <div class="card"><div class="card-body">Messages, Calls, Chats, all communications from and to the </div></div>
+                    <div class="collapse" id="communications">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#create-message" role="button" aria-expanded="false" aria-controls="create-message">/create-message</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="create-message">
+                            <pre class="pre-custom">
+                                POST http://<host>/create-message HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "message_date": MESSAGE_DATE,
+                                    "message_subject": MESSAGE_SUBJECT,
+                                    "message_body": MESSAGE_BODY,
+                                    "status": STATUS,
+                                    "event_id": EVENT_ID,
+                                    "from": FROM,
+                                    "to": TO
+                                }
+                                Sample Request
+                                {
+                                    "message_date": "2021-04-13",
+                                    "message_subject": "Testing the messages sender",
+                                    "message_body": "Checking if the message is received",
+                                    "status": 1,
+                                    "event_id": 445,
+                                    "from": "lundi@testing.mail",
+                                    "to": "awaiting_event@happy.mail"
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-message" role="button" aria-expanded="false" aria-controls="get-message">/get-message/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-message">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-message/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-messages" role="button" aria-expanded="false" aria-controls="get-all-messages">/get-all-messages/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-messages">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-messages HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#proposals" role="button" aria-expanded="false" aria-controls="proposals">Proposals</a>
+                    </li>
+                    <div class="card"><div class="card-body">Proposals and prospects for negotiations about a booking, an event, a lead, a contract, etc.</div></div>
+                    <div class="collapse" id="proposals">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#add-proposal" role="button" aria-expanded="false" aria-controls="add-proposal">/add-proposal</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="add-proposal">
+                            <pre class="pre-custom">
+                                POST http://<host>/add-proposal HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "proposal_date": PROPOSAL_DATE,
+                                    "proposal_lead": PROPOSAL_LEAD,
+                                    "proposal": PROPOSAL,
+                                    "status": STATUS,
+                                    "file_path": FILE_PATH,
+                                    "tags": TAGS
+                                }
+                                Sample Request
+                                {
+                                    "proposal_date": "2021-04-13",
+                                    "proposal_lead": "Lead 8",
+                                    "proposal": "Two venues instead of one, for 50% the price",
+                                    "status": 1,
+                                    "file_path": "./proposal_lead5_04_13_2021",
+                                    "tags": "two-venues, big-event, events-for-this-month, pending-invoice"
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-proposal" role="button" aria-expanded="false" aria-controls="update-proposal">/update-proposal</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-proposal">
+                            <pre class="pre-custom">
+                                POST http://<host>/update-proposal HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "proposal_date": PROPOSAL_DATE,
+                                    "proposal_lead": PROPOSAL_LEAD,
+                                    "proposal": PROPOSAL,
+                                    "status": STATUS,
+                                    "file_path": FILE_PATH,
+                                    "tags": TAGS,
+                                    "id": ID
+                                }
+                                Sample Request
+                                {
+                                    "proposal_date": "2021-04-13",
+                                    "proposal_lead": "Lead 8",
+                                    "proposal": "Two venues instead of one, for 50% the price",
+                                    "status": 1,
+                                    "file_path": "./proposal_lead5_04_13_2021",
+                                    "tags": "two-venues, big-event, events-for-this-month, pending-invoice",
+                                    "id":1
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-proposal" role="button" aria-expanded="false" aria-controls="get-proposal">/get-proposal/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-proposal">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-proposal/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-proposals" role="button" aria-expanded="false" aria-controls="get-all-proposals">/get-all-proposals/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-proposals">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-proposals HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#notes" role="button" aria-expanded="false" aria-controls="notes">Notes</a>
+                    </li>
+                    <div class="card"><div class="card-body">Notes about anything that needs to be remembered but the client should not see. 
+                        some clarifications, notes about a client, considerations to take, etc.
+                    </div></div>
+                    <div class="collapse" id="notes">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#create-note" role="button" aria-expanded="false" aria-controls="create-note">/create-note</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="create-note">
+                            <pre class="pre-custom">
+                                POST http://<host>/create-note HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "details": DETAILS,
+                                    "status": STATUS,
+                                    "archive_after": ARCHIVE_AFTER,
+                                    "set_reminder": SET_REMINDER
+                                }
+                                Sample Request
+                                {
+                                    "details": "Lead 4 said would probably be calling this week",
+                                    "status": 0,
+                                    "archive_after": "2021-04-20 12:00:00",
+                                    "set_reminder": "2021-04-16 10:00:00"
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-note" role="button" aria-expanded="false" aria-controls="update-note">/update-note</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-note">
+                            <pre class="pre-custom">
+                                POST http://<host>/update-note HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "details": DETAILS,
+                                    "status": STATUS,
+                                    "archive_after": ARCHIVE_AFTER,
+                                    "set_reminder": SET_REMINDER,
+                                    "id": ID
+                                }
+                                Sample Request
+                                {
+                                    "details": "Lead 4 said would probably be calling this week",
+                                    "status": 0,
+                                    "archive_after": "2021-04-20 12:00:00",
+                                    "set_reminder": "2021-04-16 10:00:00",
+                                    "id": 1
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-note" role="button" aria-expanded="false" aria-controls="get-note">/get-note/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-note">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-note/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-notes" role="button" aria-expanded="false" aria-controls="get-all-notes">/get-all-notes/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-notes">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-notes HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                    <li>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#pendings" role="button" aria-expanded="false" aria-controls="pendings">Pendings</a>
+                    </li>
+                    <div class="card"><div class="card-body">Pending urgents of the day. Reminders of events, deadlines appraching, must-do pendings.</div></div>
+                    <div class="collapse" id="pendings">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#create-to-do" role="button" aria-expanded="false" aria-controls="create-to-do">/create-to-do</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="create-to-do">
+                            <pre class="pre-custom">
+                                POST http://<host>/create-to-do HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "details": DETAILS,
+                                    "status": STATUS,
+                                    "date_for_completion": DATE_FOR_COMPLETION
+                                }
+                                Sample Request
+                                {
+                                    "details":"Confirm today's availability for venue 10",
+                                    "status":0,
+                                    "date_for_completion":"2021-04-12 13:00:00"
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#update-to-do" role="button" aria-expanded="false" aria-controls="update-to-do">/update-to-do</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="update-to-do">
+                            <pre class="pre-custom">
+                                POST http://<host>/update-to-do HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                                    
+                                {
+                                    "details": DETAILS,
+                                    "status": STATUS,
+                                    "date_for_completion": DATE_FOR_COMPLETION,
+                                    "id": ID
+                                }
+                                Sample Request
+                                {
+                                    "details":"Confirm today's availability for venue 10",
+                                    "status":0,
+                                    "date_for_completion":"2021-04-12 13:00:00",
+                                    "id":3
+                                }
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-to-do" role="button" aria-expanded="false" aria-controls="get-to-do">/get-to-do/:id</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-to-do">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-to-do/<id> HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="btn" data-toggle="collapse" href="#get-all-to-dos" role="button" aria-expanded="false" aria-controls="get-all-to-dos">/get-all-to-dos/</a>
+                            </div>
+                        </div>
+                        <div class="collapse" id="get-all-to-dos">
+                            <pre class="pre-custom">
+                                GET http://<host>/get-all-to-dos HTTP/1.1
+                                Content-Type: application/json
+                                Authorization: OAuth 2.0 JWT token
+                            </pre>
+                        </div>
+                    </div>
+                </ul>
+        </div>
+
+    <header class="py-3 mb-4 border-bottom">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <a id="enpointsdetail" href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+                <span class="fs-4">Endpoints Short List - Summary / Glosary</span>
+            </a>
+        </div>
+        </header>
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                        /register
+                        </div>
+                        <div class="col">
+                        <p>Register a new user.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                        /login
+                        </div>
+                        <div class="col">
+                        <p>Check if a user exist, and log it in.</p>
+                        <p>Return a token.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-user
+                        </div>
+                        <div class="col">
+                        <p>Return the actual user.</p>
+                        <p>Token required</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /create-lead
+                        </div>
+                        <div class="col">
+                        <p>Create a new lead.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-lead/:id
+                        </div>
+                        <div class="col">
+                        <p>Return the lead details.</p>
+                        <p>Token and ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-leads
+                        </div>
+                        <div class="col">
+                        <p>Return the list of all the leads.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-event-date
+                        </div>
+                        <div class="col">
+                        <p>Update the event date of the lead.</p>
+                        <p>Token and lead id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-assigned-users
+                        </div>
+                        <div class="col">
+                        <p>Update the assigned users of the lead.</p>
+                        <p>Token and lead id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-users-tobe-notified
+                        </div>
+                        <div class="col">
+                        <p>Update the users to be notified about the changes on the lead.</p>
+                        <p>Token and lead id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-event-status
+                        </div>
+                        <div class="col">
+                        <p>Update the lead status.</p>
+                        <p>Token and lead id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-event-details
+                        </div>
+                        <div class="col">
+                        <p>Update the lead details.</p>
+                        <p>Token and lead id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /add-contact
+                        </div>
+                        <div class="col">
+                        <p>Add new contact.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-contact
+                        </div>
+                        <div class="col">
+                        <p>Update existing contact.</p>
+                        <p>Token and contact id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-contact/:id
+                        </div>
+                        <div class="col">
+                        <p>Get details of contact.</p>
+                        <p>Token and contact id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-contacts
+                        </div>
+                        <div class="col">
+                        <p>Get list of contacts.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /add-booking
+                        </div>
+                        <div class="col">
+                        <p>Add new booking record.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-booking
+                        </div>
+                        <div class="col">
+                        <p>Update existing booking record information.</p>
+                        <p>Token and record ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-booking/:id
+                        </div>
+                        <div class="col">
+                        <p>Get booking record details.</p>
+                        <p>Token and record ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-bookings
+                        </div>
+                        <div class="col">
+                        <p>Get list of all booking records.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /add-invoice
+                        </div>
+                        <div class="col">
+                        <p>Add new invoice.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-invoice
+                        </div>
+                        <div class="col">
+                        <p>Update information.</p>
+                        <p>Token and invoice ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-invoice/:id
+                        </div>
+                        <div class="col">
+                        <p>Update information.</p>
+                        <p>Token and invoice ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-invoices
+                        </div>
+                        <div class="col">
+                        <p>Get list of invoices.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /add-contract
+                        </div>
+                        <div class="col">
+                        <p>Add new contract.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-contract
+                        </div>
+                        <div class="col">
+                        <p>Update existing contract.</p>
+                        <p>Token and contract id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-contract/:id
+                        </div>
+                        <div class="col">
+                        <p>Get contract details.</p>
+                        <p>Token and contract id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-contracts
+                        </div>
+                        <div class="col">
+                        <p>Get list of all contracts.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /create-message
+                        </div>
+                        <div class="col">
+                        <p>Create message.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-message/:id
+                        </div>
+                        <div class="col">
+                        <p>Get message details.</p>
+                        <p>Token and message id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-messages
+                        </div>
+                        <div class="col">
+                        <p>Get list of all messages.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /create-proposal
+                        </div>
+                        <div class="col">
+                        <p>Create new proposal.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-proposal
+                        </div>
+                        <div class="col">
+                        <p>Update existing proposal.</p>
+                        <p>Token and proposal id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-proposal/:id
+                        </div>
+                        <div class="col">
+                        <p>Get proposal details.</p>
+                        <p>Token and proposal id required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-proposals
+                        </div>
+                        <div class="col">
+                        <p>Get list of proposals.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /create-note
+                        </div>
+                        <div class="col">
+                        <p>Create new note.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-note
+                        </div>
+                        <div class="col">
+                        <p>Update existing note.</p>
+                        <p>Token and note ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-note/:id
+                        </div>
+                        <div class="col">
+                        <p>Get note details.</p>
+                        <p>Token and note ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-notes
+                        </div>
+                        <div class="col">
+                        <p>Get list of all notes.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /create-to-do
+                        </div>
+                        <div class="col">
+                        <p>Create new to do task.</p>
+                        <p>Token required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /update-to-do
+                        </div>
+                        <div class="col">
+                        <p>Update to do task details.</p>
+                        <p>Token and to do task ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-to-do/:id
+                        </div>
+                        <div class="col">
+                        <p>Get details of task to do.</p>
+                        <p>Token and to do task ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+            <!--Row-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            /get-all-to-dos
+                        </div>
+                        <div class="col">
+                        <p>Get list of task to do.</p>
+                        <p>Token and to do task ID required.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row end-->
+        </div>
+        <br/>
+        <br/>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>

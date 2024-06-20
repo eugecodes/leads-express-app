@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+
+<div class="container-fluid" style="padding:10px;">
+    <div class="row">
+        <div class="col-sm">
+            <button class="btn btn-primary btn-in-table" type="button" data-bs-toggle="modal" data-bs-target="#addtocalendar">Add to calendar</button>
+            <button class="btn btn-primary btn-in-table" type="button" data-bs-toggle="modal" data-bs-target="#events-edit">Cancel / Re-schedule</button>
+            <div class="monthly" id="mycalendar" style="width: 700px;box-shadow: 10px 10px 10px #ccc;"></div>
+        </div>
+        <div class="col-sm">
+            <% console.log(records.message);
+            if (records.message){ %> 
+                <div class="card bg-primary" style="margin: 5px;color:#fff;">
+                    <div class="card-body">
+            <%= records.message %></div></div>
+                <% } 
+                
+                if(!records.message) { 
+                    records.forEach(function(record) { 
+                    var dt = record.date;
+                    dt = dt.split('T');
+                    var day = dt[0].split('-');
+                    var noti = JSON.stringify(record.notification);
+                    noti = JSON.parse(noti);
+                    console.log(noti);
+                %>
+                <div class="card bg-primary" style="margin: 5px;color:#fff;"><div class="card-body">
+                    <i class="bi-alarm"> </i> <div class="little-date"><%= day[2] %></div>
+                    <div style="display: inline-flex;"><a class="notifications_link" href="<%= record.link %>"><%= record.notification %></a></div>
+                </div></div>
+            <% }); } %>
+        </div>
+      </div>
+      <div class="modal fade" id="addtocalendar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="post" action="/create-booking">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addtocalendar_title">New Booking</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <label>Event Short Description</label>
+              <input class="form-control" type="text" name="short_desc_n" id="short_desc_i" />
+              <label>Start Date</label>
+              <input class="form-control" type="date" name="start_date_n" id="start_date_i" />
+              <label>End Date</label>
+              <input class="form-control" type="date" name="end_date_n" id="end_date_i" />
+              <label>Start time</label>
+              <input class="form-control" type="time" name="start_time_n" id="start_time_i" />
+              <label>End time</label>
+              <input class="form-control" type="time" name="end_time_n" id="end_time_i"/>
+              <label>Url</label>
+              <input class="form-control" type="text" name="url_n" id="url_i"/>
+              <label>Color</label>
+              <input class="form-control custom-color" type="color" name="color_select" id="color_event" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="events-edit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addtocalendar_title">Cancel / Re-Schedule</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <label>Please select the event you'd like to cancel or re-schedule</label>
+              <select class="form-select form-select-2" required name="events" id="event">
+                <option selected>Event</option>
+                <option value="0">Sample event</option>
+                <option value="1">Sample event 2</option>
+                <option value="2">Sample event 3</option>
+              </select>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                <label class="form-check-label" for="flexSwitchCheckChecked">Cancel</label>
+              </div>
+              <label>Re-Schedule - Start Date</label>
+              <input class="form-control" type="date" name="start_date2" id="start_date2" />
+              <label>Re-Schedule - End Date</label>
+              <input class="form-control" type="date" name="end_date2" id="end_date2" />
+              <label>Re-Schedule - Start time</label>
+              <input class="form-control" type="time" name="start_time2" id="start_time2" />
+              <label>Re-Schedule - End time</label>
+              <input class="form-control" type="time" name="end_time2" id="end_time2"/>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="show-event" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="post" action="/ecal">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addtocalendar_title">See Booking</h5>
+              <input class="form-control" type="text" hidden name="eventid_n" id="eventid_i" />
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <label>Event Short Description</label>
+                  <input class="form-control" type="text" name="short_desc_n" id="short_desc_i" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto">
+                  <label>Start Date</label>
+                  <input class="form-control" type="date" name="start_date_n" id="start_date_i" />
+                </div>
+                <div class="col-auto">
+                  <label>Start time</label>
+                  <input class="form-control" type="time" name="start_time_n" id="start_time_i" />
+                </div>
+                <div class="col-4">
+                  <label>Repeats</label>
+                  <input class="form-control" type="text" name="repeats_n" id="repeats_i" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto">
+                  <label>End Date</label>
+                  <input class="form-control" type="date" name="end_date_n" id="end_date_i" />
+                </div>
+                <div class="col-auto">
+                  <label>End time</label>
+                  <input class="form-control" type="time" name="end_time_n" id="end_time_i"/>
+                </div>
+                <div class="col-4">
+                  <label>Status</label>
+                  <input class="form-control" type="text" name="status_n" id="status_i" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label>Url</label>
+                  <input class="form-control" type="text" name="url_n" id="url_i"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto">
+                  <label>Color</label>
+                  <input class="form-control custom-color" type="color" name="color_n" id="color_i" value="" />
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="action_exp" hidden name="action_expected" value="update-event" />
+                    <button type="submit" id="ics" name="ics_n" class="btn btn-primary" onclick="setAction('download-ics')">Download ICS file</button>
+                    <button type="submit" id="invite" name="invite_n" class="btn btn-primary" onclick="setAction('send-invite')">Send Invite</button>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label>Details</label>
+                  <textarea class="form-control" id="details_i" name="details_n"></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label>Venue</label>
+                  <input class="form-control" type="text" name="venue_n" id="venue_i" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      Participants
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </div>
+                  <!--<label>Participants</label>-->
+                  <input hidden class="form-control" type="text" name="participants_n" id="participants_i" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label>Related</label>
+                  <input class="form-control" type="text" name="related_n" id="related_i" />
+                  <p>* Invites are automatically sent when any update on an event is detected. </p>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+</div>
+<%- include('../partials/scripts'); %>
+<script type="text/javascript">
+$(window).on("load",function(){
+    $('#mycalendar').monthly({
+        mode: 'event',
+        jsonUrl: 'events.json',
+        dataType: 'json',
+        stylePast: true
+        //xmlUrl: 'events.xml'
+    });
+});
+var modal = document.getElementById('show-event');
+modal.addEventListener('show.bs.modal', function(event) {
+  var button = event.relatedTarget;
+  var title = button.getAttribute('data-bs-title'), startday=button.getAttribute('data-bs-startday'), endday=button.getAttribute('data-bs-endday'), eventid=button.getAttribute('data-bs-id'),
+  startime=button.getAttribute('data-bs-startime'), endtime=button.getAttribute('data-bs-endtime'), details=button.getAttribute('data-bs-details'), 
+  url=button.getAttribute('data-bs-url'), repeats=button.getAttribute('data-bs-repeats'),venue=button.getAttribute('data-bs-venue'), color=button.getAttribute('data-bs-color'),
+  related=button.getAttribute('data-bs-related'), participants=button.getAttribute('data-bs-participants'), status=button.getAttribute('data-bs-status');
+  var formname = document.querySelector('.modal-header .modal-title');
+  formname.value = title;
+  console.log(title);
+  var modalDescInput = modal.querySelector('.modal-body input#short_desc_i');
+  modalDescInput.value = title;
+  var modalStartDayInput = modal.querySelector('.modal-body input#start_date_i');
+  modalStartDayInput.value = startday;
+  console.log(startday);
+  var modalEndDayInput = modal.querySelector('.modal-body input#end_date_i');
+  modalEndDayInput.value = endday;
+  var modalStartTimeInput = modal.querySelector('.modal-body input#start_time_i');
+  modalStartTimeInput.value = startime;
+  console.log(startime);
+  var modalEndTimeInput = modal.querySelector('.modal-body input#end_time_i');
+  modalEndTimeInput.value = endtime;
+  var modalDetailsInput = modal.querySelector('.modal-body textarea#details_i');
+  modalDetailsInput.value = details;
+  var modalUrlInput = modal.querySelector('.modal-body input#url_i');
+  modalUrlInput.value = url;
+  var modalRepeatsInput = modal.querySelector('.modal-body input#repeats_i');
+  modalRepeatsInput.value = repeats;
+  var modalVenueInput = modal.querySelector('.modal-body input#venue_i');
+  modalVenueInput.value = venue;
+  var modalParticipantsInput = modal.querySelector('.modal-body input#participants_i');
+  modalParticipantsInput.value = participants;
+  var modalRelatedInput = modal.querySelector('.modal-body input#related_i');
+  modalRelatedInput.value = related;
+  var modalStatusInput = modal.querySelector('.modal-body input#status_i');
+  modalStatusInput.value = status;
+  var modalColorInput = modal.querySelector('.modal-body input#color_i');
+  modalColorInput.value = color;
+  var modalEventIdInput = modal.querySelector('.modal-body input#eventid_i');
+  modalEventIdInput.value = eventid;
+  var tmp_start = startday.split('-'), tmp_start_t = startime.split(':');
+});
+function setAction(action){
+  document.getElementById('action_exp').value = action;
+}
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

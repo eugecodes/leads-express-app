@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="tables_container">
+        <% records.forEach(function(record) { %>
+        <h1 class="special"><%= record.table %></h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <% var fields = record.fields; 
+                    fields.forEach(function(field){ %>
+                    <th scope="col"><%= field %></th>
+                    <% })%>
+                </tr>
+            </thead>
+            <tbody>
+                    <% var results = record.results;
+                    results.forEach(function(result){%>
+                    <tr>
+                        <% var fields = record.fields; 
+                        fields.forEach(function(field){ %>
+                        <th scope="col"><%= result[field] %></th>
+                        <% })%>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+        <% }); %>
+</div>
+<%- include('../partials/scripts'); %>
+<%- include('../partials/footer'); %>
+</body>
+</html>

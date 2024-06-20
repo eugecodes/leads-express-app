@@ -1,0 +1,59 @@
+{
+    "monthly": [
+        {
+            "id": 1,
+            "title": "Event for lead company Best 1",
+            "type": "Party",
+            "datetime_from": "2021-6-18",
+            "datetime_to": "2021-6-18",
+            "starttime": "16:00",
+            "endtime": "21:00",
+            "color": "#ccc",
+            "url": "/bookings/3"
+        },
+        {
+            "id": 2,
+            "title": "Event for lead company Best 2",
+            "type": "Party",
+            "datetime_from": "2021-6-12",
+            "datetime_to": "2021-6-12",
+            "starttime": "16:00",
+            "endtime": "21:00",
+            "color": "#ccc",
+            "url": "/bookings/3"
+        },
+        {
+            "id": 3,
+            "title": "Tres",
+            "type": "party",
+            "datetime_from": "2021-6-16",
+            "datetime_to": "2021-6-17",
+            "starttime": "2:00",
+            "endtime": "11:00",
+            "color": "#ccc",
+            "url": "/bookings/3"
+        },
+        {
+            "id": 4,
+            "title": "Dos",
+            "type": "Party",
+            "datetime_from": "2021-6-14",
+            "datetime_to": "2021-6-15",
+            "starttime": "11:00",
+            "endtime": "11:00",
+            "color": "#ccc",
+            "url": "/bookings/3"
+        },
+        {
+            "id": 5,
+            "title": "Uno",
+            "type": "Party",
+            "datetime_from": "2021-6-14",
+            "datetime_to": "2021-6-26",
+            "starttime": "2:00",
+            "endtime": "2:00",
+            "color": "#ccc",
+            "url": "/bookings/3"
+        }
+    ]
+}

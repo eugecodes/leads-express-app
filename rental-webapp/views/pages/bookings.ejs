@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+<div class="parallax" style="background-image: url('/images/proposals.jpg')"><h1>Bookings .</h1></div>
+<div class="tables_container">
+    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Booking</button>
+    <div class="separator"></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Type</th>
+                <th scope="col"><i class="fas fa-calendar-day"></i> Start</th>
+                <th scope="col"><i class="fas fa-calendar-day"></i> End</th>
+                <th scope="col">Description</th>
+                <th scope="col">Repeats</th>
+                <th scope="col">Venue</th>
+                <!--<th scope="col">Lead</th>-->
+                <th scope="col">Participants</th>
+                <th scope="col">Status</th>
+                <th scope="col">Details</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody><% if(message){ %> <tr><td><%= message %></td></tr> <% } 
+                if(!message && records.length >= 1){  
+                records.forEach(function(record) { 
+                    var str_from_date = record.datetime_from.split('T');
+                    var str_from_time = str_from_date[1].split('.');
+                    str_from_time = str_from_time[0].split(':');
+
+                    var str_to_date = record.datetime_to.split('T');
+                    var str_to_time = str_to_date[1].split('.');
+                    str_to_time = str_to_time[0].split(':');
+
+                    var venues = record.place_of_meeting.split(',');
+                    var participants = [];
+                    if(record.participants != null){
+                        participants = record.participants.replace('[','').replace(']','');
+                        participants = participants.split(',');
+                    }
+                    %>
+                    <tr bookingid="<%= record.id %>">
+                        <td scope="row"><%= record.id %></th>
+                        <td class="booking_type"><%= record.type %></td>
+                        <td class="startdate"><%= str_from_date[0] + ' ' + str_from_time[0]+':'+str_from_time[1] %></td>
+                        <td class="enddate"><%= str_to_date[0] + ' ' + str_to_time[0]+':'+str_to_time[1] %></td>
+                        <td class="description"><%= record.title %></td>
+                        <td class="does_not_repeat"><%= record.does_not_repeat %></td>
+                        <td class="venues"><ul><% for(var i in venues){ %>
+                            <li><%= venues[i] %> </li>
+                          <% } %></ul></td>
+                        <!--<td><%= record.related_to %></td>-->
+                        <td class="participants"><ul><% for(var i in participants){ %>
+                            <li><%= participants[i] %> </li>
+                          <% } %></ul></td>
+                        <td class="status"><%= record.status %></td>
+                        <td class="details"><%= record.details %></td>
+                        <td>
+                            <button bookingid="<%= record.id %>" class="btn btn-primary edit-booking" type="button">Edit</button>
+                            <button class="btn btn-primary" type="submit">Cancel</button>
+                        </td>
+                    </tr>
+                <% });
+            } %>
+        </tbody>
+    </table>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            Some notes.
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="new-edit-title">New Booking</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/update-booking">
+                    <input type="hidden" name="bookingid"/>
+                    <div class="mb-3">
+                        <input class="form-control" required name="type_n" placeholder="Type" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="datetimepicker_eventstart">Event Start</label>
+                        <input type='text' class="form-control" name="datetimepicker_eventstart" id='datetimepicker_eventstart' />
+                    </div>
+                    <div class="mb-3">
+                        <label for="datetimepicker_eventend">Event End</label>
+                        <input type='text' class="form-control" name="datetimepicker_eventend" id='datetimepicker_eventend' />
+                    </div>
+                    <div class="mb-3">
+                        <label for="description">Description</label>
+                        <textarea  class="form-control" name="description_n" id="description_i"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="repeats">Repeats</label>
+                        <input type='text' class="form-control" name="repeats_n" id='repeats_i' />
+                    </div>
+                    <div class="mb-3">
+                        <label for="venue">Venue</label>
+                        <input type='text' class="form-control" name="venue_n" id='venue_i' />
+                    </div>
+                    <div class="mb-3">
+                        <label for="participants">Participants</label>
+                        <select class="form-control" name="participants" id='participants'>
+                            <option id="0">Please select a Participant</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status">Status</label>
+                        <select class="form-control" name="status" id='status'>
+                            <option id="0">Appointment status</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="details">Details</label>
+                        <textarea  class="form-control" name="details" id="details"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/scripts'); %>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker_eventstart').datetimepicker({
+            format:'YYYY-MM-DD HH:mm:ss',
+            defaultDate: new Date()
+        });
+        $('#datetimepicker_eventend').datetimepicker({
+            format:'YYYY-MM-DD HH:mm:ss',
+            defaultDate: new Date()
+        });
+        $("button.edit-booking").click(function(){
+        var id = $(this).attr("bookingid");
+        var tr_booking = $("tr[bookingid='"+id+"']");
+    
+        $("input[name='type_n']").val(tr_booking.find("td.booking_type").text());
+        $("input[name='description_n']").val(tr_booking.find("td.description").text());
+        $("input[name='repeats_n']").val(tr_booking.find("td.does_not_repeat").text());
+        $("input[name='venue_n']").val(tr_booking.find("td.venues").text());
+        $("#details").text(tr_booking.find("td.details").text());
+        $('#new-edit-title').text('Edit Booking');
+        $('#exampleModal').modal('show');
+        });
+    });
+</script>    
+<%- include('../partials/footer'); %>
+</body>
+</html>

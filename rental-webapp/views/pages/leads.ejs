@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="en">
+<%- include('../partials/head'); %>
+<body>
+<header><%- include('../partials/header'); %></header>
+
+<div class="tables_container">
+        <button type="button" class="btn btn-light add-lead">Add Lead</button>
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#contact-list">Contacts</button>
+        <div class="separator"></div>
+        <table id="leads_table" class="table" style="width:100%">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Date Captured</th>
+                    <th scope="col">Event Date From</th>
+                    <th scope="col">Event Date To</th>
+                    <th scope="col">Event Subject</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">Tags</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                records.forEach(function(record) {
+                    var eventstart = record.event_start.split('T');
+                    var eventstarttime = eventstart[1].split('.');
+                    eventstarttime = eventstarttime[0].split(':');
+                    var eventend = record.event_end.split('T');
+                    var eventendtime = eventend[1].split('.');
+                    eventendtime = eventendtime[0].split(':');
+                    var captured = record.date_captured.split('T');
+
+                    var tags = [], 
+                    rec_contacts = [], 
+                    assignedusers = [], 
+                    usersfollowing = [],
+                    bookings = [], 
+                    messages = [], 
+                    notes = [];
+
+                    if(record.tags !== "" && record.tags != null){ tags = record.tags.split(",");}
+
+                    if(record.contactids !== undefined && record.contactids != null){ 
+                        var ids = JSON.parse(record.contactids);
+                        
+                        ids.forEach(function(iid){
+                            var picked = contacts.find(o => o.id === iid.contactid);
+                            
+                            if(picked !== undefined){
+                                rec_contacts.push(picked);
+                            }
+                        });
+                    }
+
+                    if(record.assigneduserids !== undefined && record.assigneduserids != null){ 
+                        var userids = JSON.parse(record.assigneduserids);
+
+                        userids.forEach(function(iid){
+                            var picked = users.find(o => o.id === iid.userid);
+                            
+                            if(picked !== undefined){
+                                assignedusers.push(picked);
+                            }
+                        });
+                    }
+                    if(record.followeruserids !== undefined && record.followeruserids != null){ 
+                        var userids = JSON.parse(record.followeruserids);
+
+                        userids.forEach(function(iid){
+                            var picked = users.find(o => o.id === iid.userid);
+                            
+                            if(picked !== undefined){
+                                usersfollowing.push(picked);
+                            }
+                        });
+                    }
+                    
+                    %>
+                    <tr class="info" lead_id="<%= record.id %>" status="<%= record.status %>">
+                        <td scope="row"><%= record.id %></td>
+                        <td class="captureddate"><%= captured[0] %></td>
+                        <td class="eventstartdate"><%= eventstart[0] + ' ' + eventstarttime[0]+':'+eventstarttime[1] %></td>
+                        <td class="eventenddate"><%= eventend[0] + ' ' + eventendtime[0]+':'+eventendtime[1] %></td>
+                        <td class="eventtypeofevent"><%= record.type_of_event %></td>
+                        <td class="leaddetails"><%= record.details %></td>
+                        <td class="eventtags"><ul><% for(var i in tags){
+                            %> <li><%= tags[i] %> </li>
+                        <% } %></ul></td>
+                        <td>
+                            <button lead_id="<%= record.id %>" class="showmore-control btn btn-secondary btn-in-table" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShowMore<%= record.id %>" aria-expanded="false" aria-controls="collapseShowMore<%= record.id %>">Show more...</button>
+                            <button lead_id="<%= record.id %>" class="btn btn-primary btn-in-table edit-lead">Edit</button>
+                            <button lead_id="<%= record.id %>" class="btn btn-primary btn-in-table delete-lead">Remove</button>
+                            <button lead_id="<%= record.id %>" class="btn btn-primary btn-in-table change-status">On-Hold</button>
+                        </td>
+                    </tr>
+                    <tr class="details" lead_id="<%= record.id %>">
+                        <td colspan="8">
+                            <div class="collapse" id="collapseShowMore<%= record.id %>">
+                                <!--<div class="card card-body">-->
+                                    <div class="accordion accordion-flush" id="accordionFlush<%= record.id %>">
+                                        <div class="accordion-item">
+                                          <h2 class="accordion-header" id="flush-headingOne<%= record.id %>">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne<%= record.id %>" aria-expanded="false" aria-controls="flush-collapseOne<%= record.id %>">
+                                              Contacts
+                                            </button>
+                                          </h2>
+                                          <div id="flush-collapseOne<%= record.id %>" class="accordion-collapse collapse" aria-labelledby="flush-headingOne<%= record.id %>" data-bs-parent="#accordionFlush<%= record.id %>">
+                                            <div class="accordion-body">
+                                            <table class="table tbl-contacts">
+                                                <thead>
+                                                    <tr>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Email</th>
+                                                    <th scope="col">Address</th>
+                                                    <th scope="col">Phone</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% 
+                                                    if (rec_contacts.length > 0){
+                                                    for(var ci in rec_contacts){ %> 
+                                                    <tr contact-id="<%= rec_contacts[ci].id %>">
+                                                        <td><%= rec_contacts[ci].fullname %></td>
+                                                        <td><%= rec_contacts[ci].email %></td>
+                                                        <td><%= rec_contacts[ci].address %></td>
+                                                        <td><%= rec_contacts[ci].phone %></td>
+                                                    </tr>
+                                                    <%} } else { %>
+                                                        <tr>
+                                                            <td colspan="10">No contacts yet</td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                          <h2 class="accordion-header" id="flush-headingTwo<%= record.id %>">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo<%= record.id %>" aria-expanded="false" aria-controls="flush-collapseTwo<%= record.id %>">
+                                              Users assigned
+                                            </button>
+                                          </h2>
+                                          <div id="flush-collapseTwo<%= record.id %>" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo<%= record.id %>" data-bs-parent="#accordionFlush<%= record.id %>">
+                                            <div class="accordion-body">
+                                                <table class="table tbl-userassigned">
+                                                    <thead>
+                                                        <tr>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Phone</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% 
+                                                        if (assignedusers.length > 0){
+                                                        for(var ci in assignedusers){ %> 
+                                                        <tr user-id="<%= assignedusers[ci].id %>">
+                                                            <td><%= assignedusers[ci].fullname %></td>
+                                                            <td><%= assignedusers[ci].email %></td>
+                                                            <td><%= assignedusers[ci].phone %></td>
+                                                        </tr>
+                                                        <%} } else { %>
+                                                            <tr>
+                                                                <td colspan="10">No users yet</td>
+                                                            </tr>
+                                                        <% } %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                          <h2 class="accordion-header" id="flush-headingThree<%= record.id %>">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree<%= record.id %>" aria-expanded="false" aria-controls="flush-collapseThree<%= record.id %>">
+                                              Users following this lead
+                                            </button>
+                                          </h2>
+                                          <div id="flush-collapseThree<%= record.id %>" class="accordion-collapse collapse" aria-labelledby="flush-headingThree<%= record.id %>" data-bs-parent="#accordionFlush<%= record.id %>">
+                                            <div class="accordion-body">
+                                                <table class="table tbl-usersnotified">
+                                                    <thead>
+                                                        <tr>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Phone</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% 
+                                                        if (usersfollowing.length > 0){
+                                                        for(var ci in usersfollowing){ %> 
+                                                        <tr user-id="<%= usersfollowing[ci].id %>">
+                                                            <td><%= usersfollowing[ci].fullname %></td>
+                                                            <td><%= usersfollowing[ci].email %></td>
+                                                            <td><%= usersfollowing[ci].phone %></td>
+                                                        </tr>
+                                                        <%} } else { %>
+                                                            <tr>
+                                                                <td colspan="10">No users yet</td>
+                                                            </tr>
+                                                        <% } %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingFour<%= record.id %>">
+                                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour<%= record.id %>" aria-expanded="false" aria-controls="flush-collapseFour<%= record.id %>">
+                                                Booking
+                                              </button>
+                                            </h2>
+                                            <div id="flush-collapseFour<%= record.id %>" class="accordion-collapse collapse" aria-labelledby="flush-headingFour<%= record.id %>" data-bs-parent="#accordionFlush<%= record.id %>">
+                                              <div class="accordion-body">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                        <th scope="col">Title</th>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Details</th>
+                                                        <th scope="col">From</th>
+                                                        <th scope="col">To</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbl-booking">
+                                                        <tr>
+                                                            <td colspan="10">No booking yet</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingSix<%= record.id %>">
+                                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix<%= record.id %>" aria-expanded="false" aria-controls="flush-collapseSix<%= record.id %>">
+                                                Messages
+                                              </button>
+                                            </h2>
+                                            <div id="flush-collapseSix<%= record.id %>" class="accordion-collapse collapse" aria-labelledby="flush-headingSix<%= record.id %>" data-bs-parent="#accordionFlush<%= record.id %>">
+                                              <div class="accordion-body tbl-messages">
+                                                <p>No messages yet</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingSeven<%= record.id %>">
+                                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven<%= record.id %>" aria-expanded="false" aria-controls="flush-collapseSeven<%= record.id %>">
+                                                Notes
+                                              </button>
+                                            </h2>
+                                            <div id="flush-collapseSeven<%= record.id %>" class="accordion-collapse collapse" aria-labelledby="flush-headingSeven<%= record.id %>" data-bs-parent="#accordionFlush<%= record.id %>">
+                                              <div class="accordion-body tbl-notes">
+                                                  <p>No notes yet</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                      </div>
+                                <!--</div>-->
+                            </div>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="contact-list" tabindex="-1" aria-labelledby="contact-list" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="contact-list">Contacts</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-header">
+                            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#contact-lead">Add Contact</button>
+                        </div>
+                        <ul style="height: auto;" class="list-group list-group-flush">
+                        <% if(contacts) { contacts.forEach(function(contact) { %>
+                            <li class="list-group-item list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <%= contact.fullname %>
+                                </div>
+                                <button contact="<%= JSON.stringify(contact) %>" class="badge btn-success edit-contact" style="margin-right: 5px;"><i class="bi bi-pencil"></i></button>
+                                <button contactid="<%= contact.id %>" class="badge btn-danger delete-contact" style="margin-left: 5px;"><i class="bi bi-trash"></i></button>
+                            </li>
+                        <% }); } %>
+                    </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="contact-lead" tabindex="-1" aria-labelledby="contact-lead" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="contact-lead">New Contact of Lead</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3"><input class="form-control" required name="fullname" placeholder="Fullname" /></div>
+                    <div class="mb-3"><input class="form-control" required name="email" placeholder="Email" /></div>
+                    <div class="mb-3"><input class="form-control" required name="phone" placeholder="Phone" /></div>
+                    <div class="mb-3"><input class="form-control" required name="address" placeholder="Address" /></div>
+                    <div class="mb-3">
+                        <select class="form-select optionalformat" >
+                            <option value="0">Common contacts hours</option>
+                            <option value="1">Specific dates</option>
+                            <option value="2">Custom</option>
+                        </select>
+                    </div>
+                    <div class="card card-body optional-format-box1">
+                        <div class="mb-3">
+                            <label>From</label>
+                        </div>
+                        <div class="mb-3">
+                            <select style="display: inline; width: auto;" class="form-select weekdays1">
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                            <select  style="display: inline; width: auto;" class="form-select hours1">
+                                <% for(var i = 0; i < 10; i++) { %>
+                                    <option value="<%= ('00' + i).slice(-2) %>"><%= ('00' + i).slice(-2) %></option>
+                                    <% } %>
+                            </select>
+                            <label style="display: inline; width: auto;">:</label>
+                            <select style="display: inline; width: auto;" class="form-select hours2">
+                                <% for(var i = 0; i < 60; i++) { %>
+                                    <option value="<%= ('00' + i).slice(-2) %>"><%= ('00' + i).slice(-2) %></option>
+                                    <% } %>
+                            </select>
+                            <select style="display: inline; width: auto;" class="form-select hours3">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>To: </label>
+                        </div>
+                        <div class="mb-3">
+                            <select style="display: inline; width: auto;" class="form-select weekdays2">
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                            <select  style="display: inline; width: auto;" class="form-select hours4">
+                                <% for(var i = 0; i < 10; i++) { %>
+                                    <option value="<%= ('00' + i).slice(-2) %>"><%= ('00' + i).slice(-2) %></option>
+                                    <% } %>
+                            </select>
+                            <label style="display: inline; width: auto;">:</label>
+                            <select style="display: inline; width: auto;" class="form-select hours5">
+                                <% for(var i = 0; i < 60; i++) { %>
+                                    <option value="<%= ('00' + i).slice(-2) %>"><%= ('00' + i).slice(-2) %></option>
+                                    <% } %>
+                            </select>
+                            <select style="display: inline; width: auto;" class="form-select hours6">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="card card-body optional-format-box2 no-show">
+                        <div class="mb-3">
+                            <label for="datetimepicker1">From:</label>
+                            <input type='text' class="form-control" name="contact_hours_from" id='datetimepicker1' />
+                        </div>
+                        <div class="mb-3">
+                            <label for="datetimepicker2">To:</label>
+                            <input type='text' class="form-control" name="contact_hours_to" id='datetimepicker2' />
+                        </div>
+                    </div>
+                    <div class="card card-body optional-format-box3 no-show">
+                        <div class="mb-3">
+                            <label for="datetimepicker1">From: </label>
+                            <input type='text' class="form-control contact-from-textbox"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="datetimepicker2">To: </label>
+                            <input type='text' class="form-control contact-to-textbox"/>
+                        </div>
+                    </div>
+                    <input type="hidden" name="contact_from" />
+                    <input type="hidden" name="contact_to" />
+                    <button class="btn btn-primary save-contact" contact-id="0">Save</button>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="lead" tabindex="-1" aria-labelledby="lead" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lead</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <input type="hidden" name="lead_id" value="0" />
+                        <input type="hidden" name="statusid" value="1" />
+                        <input type="hidden" name="contactids" value="[]" />
+                        <input type="hidden" name="original_contactids" value="[]" />
+                        <input type="hidden" name="txttypeofevent" />
+                        <input type="hidden" name="followeruserids" value="[]" />
+                        <input type="hidden" name="original_followeruserids" value="[]" />
+                        <input type="hidden" name="assigneduserids" value="[]" />
+                        <input type="hidden" name="original_assigneduserids" value="[]" />
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>Event Start</label>
+                                <input type='text' class="form-control" name="contact_hours_from" id='datetimepicker3' />
+                            </div>
+                            <div class="col-auto">
+                                <label>Event End</label>
+                                <input type='text' class="form-control" name="contact_hours_to" id='datetimepicker4' />
+                            </div>
+                            <div class="col-auto">
+                                <label>Lead Phase</label>
+                                <select class="form-select" id="status" aria-label=".form-select-sm">
+                                    <option value="1">Received an inquiry about a possible event</option>
+                                    <option value="2">Active communication with the lead</option>
+                                    <option value="3">Awaiting first proposal</option>
+                                    <option value="4">Awaiting a new proposal</option>
+                                    <option value="5">Proposal accepted</option>
+                                    <option value="6">Proposal rejected / Closed lead</option>
+                                    <option value="7">Awaiting Invoice</option>
+                                    <option value="8">Awaiting Invoice Payment</option>
+                                    <option value="9">Invoice Paid</option>
+                                    <option value="10">Awaiting Contract</option>
+                                    <option value="11">Contract Signed</option>
+                                    <option value="12">Awaiting Contract Extension</option>
+                                    <option value="13">Succesfully Closed</option>
+                                    <option value="14">Cancelled</option>
+                                    <option value="15">On-Hold</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>Contacts</label>
+                                <div class="custom-list-box">
+                                    <ul id="contacts" class="list-group">
+                                    <% if(contacts) { contacts.forEach(function(contact) { %>
+                                        <li class="list-group-item">
+                                            <input class="form-check-input contacts-options" value="<%= contact.id %>" type="checkbox" aria-label="<%= contact.fullname %>"><%= contact.fullname %>
+                                        </li>
+                                    <% }); } %>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <label>Type of Event</label>
+                                <select class="form-select" id="typeofevent" aria-label=".form-select-sm">
+                                    <option value="Short-term Event / Some hours">Short-term Event / Some hours</option>
+                                    <option value="Long-term / Some days">Long-term / Some days</option>
+                                    <option value="Formal Event">Formal Event</option>
+                                    <option value="Semi-formal event">Semi-formal event</option>
+                                    <option value="Informal Event">Informal Event</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <label>Users assigned to this lead</label>
+                                <!-- Populate existent users -->
+                                <ul class="list-group" id="assignedusers">
+                                    <% if(users) { users.forEach(function(user) { %>
+                                        <li class="list-group-item">
+                                            <input class="form-check-input assigned-user-options" value="<%= user.id %>" type="checkbox" user-name="<%= user.fullname %>"><%= user.fullname %>
+                                        </li>
+                                    <% }); } %>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>Users to be notified</label>
+                                <!-- Populate existent users -->
+                                <ul class="list-group" id="notified_users">
+                                    <% if(users) { users.forEach(function(user) { %>
+                                        <li class="list-group-item">
+                                            <input class="form-check-input notified-user-options" value="<%= user.id %>" type="checkbox" user-name="<%= user.fullname %>"><%= user.fullname %>
+                                        </li>
+                                    <% }); } %>
+                                </ul>
+                            </div>
+                            <div class="col-auto">
+                                <label>Tags</label>
+                                <input class="form-control txttags" required name="tags" data-role="tagsinput" placeholder="Tags" />
+                            </div>
+                            <div class="col-auto">
+                                <label>Details</label>
+                                <textarea class="form-control txtdetails" name="details" id="details" placeholder="Details"></textarea>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary save-lead">Add Lead</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+</div>
+<%- include('../partials/scripts'); %>
+<script type="text/javascript">
+function updateContactFromTo(){
+    var format = $("select.weekdays1").val() +" "+$("select.hours1").val()+":"+$("select.hours2").val()+" "+$("select.hours3").val();
+    $("input[type=hidden][name=contact_from]").val(format);
+    var formatto = $("select.weekdays2").val() +" "+$("select.hours4").val()+":"+$("select.hours5").val()+" "+$("select.hours6").val();
+    $("input[type=hidden][name=contact_to]").val(formatto);
+}
+$(function () {
+    $('#datetimepicker3').datetimepicker({
+        format:'YYYY-MM-DD HH:mm:ss',
+        defaultDate: new Date()
+    });
+    $('#datetimepicker4').datetimepicker({
+        format:'YYYY-MM-DD HH:mm:ss',
+        defaultDate: new Date()
+    });
+    $('#datetimepicker1').datetimepicker({
+        format:'YYYY-MM-DD HH:mm:ss',
+        defaultDate: new Date()
+    });
+    $('#datetimepicker1').on("dp.change",function(){
+            $("input[name=contact_from]").val($(this).val());
+        });
+    $('#datetimepicker2').datetimepicker({
+        format:'YYYY-MM-DD HH:mm:ss',
+        defaultDate: new Date()
+    });
+    $('#datetimepicker2').on("dp.change",function(){
+            $("input[name=contact_to]").val($(this).val());
+        });
+    $(".contact-from-textbox").on('change', function (){
+        $("input[name=contact_from]").val($(this).val());
+    });
+    $(".contact-to-textbox").on('change', function (){
+        $("input[name=contact_to]").val($(this).val());
+    });
+    $(".optional-format-box1 select").on('change', function (){
+        updateContactFromTo();
+    });
+    $("button.edit-contact").click(function(){
+        $('#contact-lead').modal('show');
+        var json = JSON.parse($(this).attr("contact"));
+        $("button.save-contact").attr("contact-id", json.id);
+        $("div#contact-lead.modal input[name=fullname]").val(json.fullname);
+        $("div#contact-lead.modal input[name=email]").val(json.email);
+        $("div#contact-lead.modal input[name=phone]").val(json.phone);
+        $("div#contact-lead.modal input[name=address]").val(json.address);
+        $("select.optionalformat").val("2");
+        var json_contact = json.contact_hours.replace("From: ", "").split(" To: ");
+        $(".contact-from-textbox").val(json_contact[0]);
+        $("div#contact-lead.modal input[type=hidden][name=contact_from]").val(json_contact[0]);
+        $(".contact-to-textbox").val(json_contact[1]);
+        $("div#contact-lead.modal input[type=hidden][name=contact_to]").val(json_contact[1]);
+        $(".optional-format-box3").removeClass("no-show");
+        $(".optional-format-box1").addClass("no-show");
+        $(".optional-format-box2").addClass("no-show");
+    });
+    $("button.delete-contact").click(function(){
+        var id = $(this).attr("contactid");
+        Swal.showLoading();
+        $.ajax({
+            url: "/delete-contact",
+            data: {
+                "contactid": id
+            },
+            type:  'POST',
+            success: function (response) { 
+                console.log(response);
+                Swal.close();
+                location.reload();
+            },
+            error: function(err){
+                console.log(err);
+                Swal.close();
+            }
+        });
+    });
+    $("button.save-contact").click(function(){
+        var id = $(this).attr("contact-id");
+        Swal.showLoading();
+        $.ajax({
+            url: "/update-contact",
+            data: {
+                "contactid": id,
+                "fullname": $("div#contact-lead.modal input[name=fullname]").val(),
+                "email": $("div#contact-lead.modal input[name=email]").val(),
+                "phone": $("div#contact-lead.modal input[name=phone]").val(),
+                "address": $("div#contact-lead.modal input[name=address]").val(),
+                "contact_from": $("div#contact-lead.modal input[type=hidden][name=contact_from]").val(),
+                "contact_to": $("div#contact-lead.modal input[type=hidden][name=contact_to]").val()
+            },
+            type:  'POST',
+            success: function (response) { 
+                console.log(response);
+                Swal.close();
+                location.reload();
+            },
+            error: function(err){
+                console.log(err);
+                Swal.close();
+            }
+        });
+    });
+    $("select.optionalformat").on('change', function() {
+        $("input[name=contact_from]").val("");
+        $("input[name=contact_to]").val("");
+        
+        if($(this).val() == "0"){
+            //common
+            $("input[name=contact_from]").val("Monday 00:00 AM");
+            $("input[name=contact_to]").val("Monday 00:00 AM");
+
+            if($(".optional-format-box1").hasClass("no-show")){
+                $(".optional-format-box1").removeClass("no-show");
+            }
+            if(!$(".optional-format-box2").hasClass("no-show")){
+                $(".optional-format-box2").addClass("no-show");
+            }
+            if(!$(".optional-format-box3").hasClass("no-show")){
+                $(".optional-format-box3").addClass("no-show");
+            }
+        }
+        if($(this).val() == "1"){
+            //dates
+            var dfrom = new Date();
+            var dfromformat = [dfrom.getFullYear(),dfrom.getMonth()+1,
+            dfrom.getDate()].join('-')+' '+
+            [dfrom.getHours(),
+            dfrom.getMinutes(),
+            dfrom.getSeconds()].join(':');
+            
+            $("input[name=contact_from]").val(dfromformat);
+            $("input[name=contact_to]").val(dfromformat);
+
+            if(!$(".optional-format-box1").hasClass("no-show")){
+                $(".optional-format-box1").addClass("no-show");
+            }
+            if($(".optional-format-box2").hasClass("no-show")){
+                $(".optional-format-box2").removeClass("no-show");
+            }
+            if(!$(".optional-format-box3").hasClass("no-show")){
+                $(".optional-format-box3").addClass("no-show");
+            }
+        }
+        if($(this).val() == "2"){
+            //custom
+            if(!$(".optional-format-box1").hasClass("no-show")){
+                $(".optional-format-box1").addClass("no-show");
+            }
+            if(!$(".optional-format-box2").hasClass("no-show")){
+                $(".optional-format-box2").addClass("no-show");
+            }
+            if($(".optional-format-box3").hasClass("no-show")){
+                $(".optional-format-box3").removeClass("no-show");
+            }
+        }
+    });
+    $(".showmore-control").click(function(){
+        var btn = $(this);
+        if(btn.attr("loaded") === undefined || btn.attr("loaded") == "false"){
+            console.log("clicked");
+            Swal.showLoading();
+            var leadid = btn.attr("lead_id");
+            $.ajax({
+                    url: "/lead-details",
+                    data: {
+                        "leadid": leadid
+                    },
+                    type: 'POST',
+                    success: function(response) {
+                        Swal.close();
+                        console.log(response);
+                        btn.attr("loaded","true");
+
+                        var bookings = response.booking;
+                        if(bookings.length > 0){
+                            $("tr.details[lead_id="+leadid+"] table tbody.tbl-booking").html("");
+                            $.each(bookings, function(bi, booking){
+                                var dfrom = new Date(booking.datetime_from);
+                                var dfromformat = [dfrom.getMonth()+1,
+                                dfrom.getDate(),
+                                dfrom.getFullYear()].join('/')+' '+
+                                [dfrom.getHours(),
+                                dfrom.getMinutes(),
+                                dfrom.getSeconds()].join(':');
+                                var dto = new Date(booking.datetime_to);
+                                var dtoformat = [dto.getMonth()+1,
+                                dto.getDate(),
+                                dto.getFullYear()].join('/')+' '+
+                                [dto.getHours(),
+                                dto.getMinutes(),
+                                dto.getSeconds()].join(':');
+                                var hhtml = "<tr>";
+                                    hhtml = hhtml + "<td>"+booking.title+"</td>";
+                                    hhtml = hhtml + "<td>"+booking.type+"</td>";
+                                    hhtml = hhtml + "<td>"+booking.details+"</td>";
+                                    hhtml = hhtml + "<td>"+ dfromformat +"</td>";
+                                    hhtml = hhtml + "<td>"+ dtoformat+"</td>";
+                                $("tr.details[lead_id="+leadid+"] table tbody.tbl-booking").append(hhtml + "</tr>");
+                            });
+                        }
+                        // Messages
+                        var messages = response.messages;
+                        if(messages.length > 0){
+                            $("tr.details[lead_id="+leadid+"] div.tbl-messages").html("");
+                            $.each(messages, function(mi, message){
+                                var ddate = new Date(message.message_date);
+                                var dfromformat = [ddate.getMonth()+1,
+                                ddate.getDate(),
+                                ddate.getFullYear()].join('/')+' '+
+                                [ddate.getHours(),
+                                ddate.getMinutes(),
+                                ddate.getSeconds()].join(':');
+
+                                var hhtml = "";
+                                    hhtml = hhtml + "<p><strong>Date: </strong>"+message.dfromformat+"</p>";
+                                    hhtml = hhtml + "<p><strong>From: </strong>"+message.from+"</p>";
+                                    hhtml = hhtml + "<p><strong>To: </strong>"+message.to+"</p>";
+                                    hhtml = hhtml + "<p><strong>Subject: </strong>"+message.message_subject+"</p>";
+                                    hhtml = hhtml + "<p><strong>Message: </strong></p>";
+                                    hhtml = hhtml + "<p>"+ message.message_body+"</p>";
+                                $("tr.details[lead_id="+leadid+"] div.tbl-messages").append(hhtml + "<hr />");
+                            });
+                        }
+                        
+                        var notes = response.notes;
+                        if(notes.length > 0){
+                            $("tr.details[lead_id="+leadid+"] div.tbl-notes").html("");
+                            $.each(notes, function(mi, note){
+                                var ddate = new Date(note.created);
+                                var ddateformat = [ddate.getMonth()+1,
+                                ddate.getDate(),
+                                ddate.getFullYear()].join('/')+' '+
+                                [ddate.getHours(),
+                                ddate.getMinutes(),
+                                ddate.getSeconds()].join(':');
+
+                                var hhtml = "";
+                                    hhtml = hhtml + "<p><strong>Date: </strong>"+ddateformat+"</p>";
+                                    hhtml = hhtml + "<p>"+note.details+"</p>";
+                                $("tr.details[lead_id="+leadid+"] div.tbl-notes").append(hhtml + "<hr />");
+                            });
+                        }
+                    },
+                    error: function(err){console.log(err);}
+                });
+        }
+
+        if($(this).hasClass("btn-secondary")){
+            $(this).removeClass("btn-secondary");
+            $(this).addClass("btn-dark");
+            $(this).text("Show less...");
+        }else{
+            $(this).addClass("btn-secondary");
+            $(this).removeClass("btn-dark");
+            $(this).text("Show more...");
+        }
+    });
+    $("input[name=txttypeofevent]").val($("select#typeofevent").val());
+    $("ul#notified_users input[type='checkbox']").on('click', function() {
+        var checkedlist = $("input[name='followeruserids']").val();        
+        var jsonobj = JSON.parse(checkedlist);
+
+        if ($(this).is(":checked")){
+            if(!jsonobj.includes($(this).val())){
+                jsonobj.push($(this).val());
+                var str = JSON.stringify(jsonobj);
+                $("input[name='followeruserids']").val(str);
+            }
+        }else{
+            var index = jsonobj.indexOf($(this).val());
+            jsonobj.splice(index, 1);
+            var str = JSON.stringify(jsonobj);
+            $("input[name='followeruserids']").val(str);
+        }
+    });
+    $("ul#assignedusers input[type='checkbox']").on('click', function() {
+        var checkedlist = $("input[name='assigneduserids']").val();        
+        var jsonobj = JSON.parse(checkedlist);
+
+        if ($(this).is(":checked")){
+            if(!jsonobj.includes($(this).val())){
+                jsonobj.push($(this).val());
+                var str = JSON.stringify(jsonobj);
+                $("input[name='assigneduserids']").val(str);
+            }
+        }else{
+            var index = jsonobj.indexOf($(this).val());
+            jsonobj.splice(index, 1);
+            var str = JSON.stringify(jsonobj);
+            $("input[name='assigneduserids']").val(str);
+        }
+    });
+    $("ul#contacts input[type='checkbox']").on('click', function() {
+        var checkedlist = $("input[name='contactids']").val();        
+        var jsonobj = JSON.parse(checkedlist);
+
+        if ($(this).is(":checked")){
+            if(!jsonobj.includes($(this).val())){
+                jsonobj.push($(this).val());
+                var str = JSON.stringify(jsonobj);
+                $("input[name='contactids']").val(str);
+            }
+        }else{
+            var index = jsonobj.indexOf($(this).val());
+            jsonobj.splice(index, 1);
+            var str = JSON.stringify(jsonobj);
+            $("input[name='contactids']").val(str);
+        }        
+    });
+    $("select#typeofevent").on('change', function() {
+        $("input[name='txttypeofevent']").val($(this).val());
+    });
+
+    $("select#status").on('change', function() {
+        $("input[name='statusid']").val($(this).val());
+    });
+
+    $(".add-lead").click(function(){
+        $('#lead').modal('show');
+        $("div.modal#lead input[type=hidden][name=lead_id]").val(0);
+        $("input[name='tags']").val("");
+        $("textarea.txtdetails").val("");
+        $("input[type=hidden][name=contactids]").val("[]");
+        $("input[type=hidden][name=original_contactids]").val("[]");
+        $("input.contacts-options").removeAttr("checked");
+
+        $("input[type=hidden][name=assigneduserids]").val("[]");
+        $("input[type=hidden][name=original_assigneduserids]").val("[]");
+        $("input.assigned-user-options").removeAttr("checked");
+
+        
+        $("input[type=hidden][name=followeruserids]").val("[]");
+        $("input[type=hidden][name=original_followeruserids]").val("[]");
+        $("input.notified-user-options").removeAttr("checked");
+
+    });
+    
+    $(".edit-lead").click(function(){
+        var lead_id = $(this).attr('lead_id');
+        var tr_lead = $("tr[lead_id='"+lead_id+"']");
+        $("div.modal#lead input[type=hidden][name=lead_id]").val(lead_id);
+        var tags = [];
+        $.each(tr_lead.find("td.eventtags ul li"), function(){
+            tags.push($(this).text().trim());
+        });
+        var strtags = tags.join(", ");
+        $("input[name='tags']").val(strtags);
+        $("#details").val(tr_lead.find("td.eventdetails").text());
+        $('#lead').modal('show');
+        $("input[type=hidden][name=txttypeofevent]").val(tr_lead.find("td.eventtypeofevent").text());
+        $("input[type=hidden][name=statusid]").val(tr_lead.attr("status"));
+        $("select#typeofevent").val($("input[type=hidden][name=txttypeofevent]").val());
+        $("select#status").val($("input[type=hidden][name=statusid]").val());
+        $("textarea.txtdetails").val(tr_lead.find("td.leaddetails").text());
+
+        var contacts = [];
+        $(tr_lead.find("table.tbl-contacts tbody tr")).each(function(){
+            var contactid = $(this).attr("contact-id");
+            $("input.contacts-options[value="+contactid+"]").attr("checked", "true");
+            contacts.push(contactid);
+        });
+        $("input[type=hidden][name=contactids]").val(JSON.stringify(contacts));
+        $("input[type=hidden][name=original_contactids]").val(JSON.stringify(contacts));
+
+        var assignedusers = [];
+        $(tr_lead.find("table.tbl-userassigned tbody tr")).each(function(){
+            var userid = $(this).attr("user-id");
+            $("input.assigned-user-options[value="+userid+"]").attr("checked", "true");
+            assignedusers.push(userid);
+        });
+        $("input[type=hidden][name=assigneduserids]").val(JSON.stringify(assignedusers));
+        $("input[type=hidden][name=original_assigneduserids]").val(JSON.stringify(assignedusers));
+        var notifiedusers = [];
+        $(tr_lead.find("table.tbl-usersnotified tbody tr")).each(function(){
+            var userid = $(this).attr("user-id");
+            $("input.notified-user-options[value="+userid+"]").attr("checked", "true");
+            notifiedusers.push(userid);
+        });
+        $("input[type=hidden][name=followeruserids]").val(JSON.stringify(notifiedusers));
+        $("input[type=hidden][name=original_followeruserids]").val(JSON.stringify(notifiedusers));
+    });
+
+    $("button.save-lead").click(function(){
+        Swal.showLoading();
+        var leadid = $("div.modal#lead input[type=hidden][name=lead_id]").val();
+        if(Number(leadid) > 0 ){
+            
+            $.ajax({
+                url: "/update-lead",
+                data: {
+                    "leadid": leadid,
+                    "contact_hours_from": $("#datetimepicker3").val(),
+                    "contact_hours_to": $("#datetimepicker3").val(),
+                    "tags": $(".txttags").val(),
+                    "details": $("textarea.txtdetails").val(),
+                    "statusid": $("input[name='statusid']").val(),
+                    "txttypeofevent": $("input[name='txttypeofevent']").val(),
+                },
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                    //edited 
+                    var contactids = $("input[name='contactids']").val();
+                    var contacts = JSON.parse(contactids);
+
+                    var oldcontactids = $("input[name='original_contactids']").val();
+                    var oldcontacts = JSON.parse(oldcontactids);
+                    //contacts to add
+                    var contacts_add = [];
+                    contacts_add = contacts.filter(x => !oldcontacts.includes(x));
+                    //contacts to remove
+                    var contacts_remove = [];
+                    contacts_remove = oldcontacts.filter(x => !contacts.includes(x));
+
+                    var assigneduserids = $("input[name='assigneduserids']").val();
+                    var assignedusers = JSON.parse(assigneduserids);
+
+                    var oldassigneduserids = $("input[name='original_assigneduserids']").val();
+                    var oldassignedusers = JSON.parse(oldassigneduserids);
+                    //users to add
+                    var assignedusers_add = [];
+                    assignedusers_add = assignedusers.filter(x => !oldassignedusers.includes(x));
+                    //users to remove
+                    var assignedusers_remove = [];
+                    assignedusers_remove = oldassignedusers.filter(x => !assignedusers.includes(x));
+
+                    var notifieduserids = $("input[name='followeruserids']").val();
+                    var notifiedusers = JSON.parse(notifieduserids);
+
+                    var oldnotifieduserids = $("input[name='original_followeruserids']").val();
+                    var oldnotifiedusers = JSON.parse(oldnotifieduserids);
+                    //users to add
+                    var notifiedusers_add = [];
+                    notifiedusers_add = notifiedusers.filter(x => !oldnotifiedusers.includes(x));
+                    //users to remove
+                    var notifiedusers_remove = [];
+                    notifiedusers_remove = oldnotifiedusers.filter(x => !notifiedusers.includes(x));
+
+                    
+                    var allArray = Promise.all([
+                    new Promise(resolve => {
+                        $.each(contacts_add, function(ii, contactid){
+                            $.ajax({
+                                url: "/add-lead-contact",
+                                data: {
+                                    "leadid": leadid,
+                                    "contactid": contactid,
+                                },
+                                type: 'POST',
+                                success: function(response) {
+                                    return "";
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
+                        });
+                    }),
+                    new Promise(resolve => {
+                        $.each(contacts_remove, function(ii, contactid){
+                            $.ajax({
+                                url: "/delete-lead-contact",
+                                data: {
+                                    "leadid": leadid,
+                                    "contactid": contactid,
+                                },
+                                type: 'POST',
+                                success: function(response) {
+                                    return "";
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
+                        });
+                    }),
+                    new Promise(resolve => {
+                        $.each(assignedusers_add, function(ii, userid){
+                            $.ajax({
+                                url: "/add-lead-user",
+                                data: {
+                                    "leadid": leadid,
+                                    "userid": userid,
+                                    "type": "ASSIGNED"
+                                },
+                                type: 'POST',
+                                success: function(response) {
+                                    return "";
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
+                        });
+                    }),
+                    new Promise(resolve => {
+                        $.each(assignedusers_remove, function(ii, userid){
+                            $.ajax({
+                                url: "/delete-lead-user",
+                                data: {
+                                    "leadid": leadid,
+                                    "userid": userid,
+                                    "type": "ASSIGNED"
+                                },
+                                type: 'POST',
+                                success: function(response) {
+                                    return "";
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
+                        });
+                    }),
+                    new Promise(resolve => {
+                        $.each(notifiedusers_add, function(ii, userid){
+                            $.ajax({
+                                url: "/add-lead-user",
+                                data: {
+                                    "leadid": leadid,
+                                    "userid": userid,
+                                    "type": "FOLLOW"
+                                },
+                                type: 'POST',
+                                success: function(response) {
+                                    return "";
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
+                        });
+                    }),
+                    new Promise(resolve => {
+                        $.each(notifiedusers_remove, function(ii, userid){
+                            $.ajax({
+                                url: "/delete-lead-user",
+                                data: {
+                                    "leadid": leadid,
+                                    "userid": userid,
+                                    "type": "FOLLOW"
+                                },
+                                type: 'POST',
+                                success: function(response) {
+                                    return "";
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
+                        });
+                    })
+                ]);
+                    Swal.close();
+                    location.reload();
+                   
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            });
+        }else{
+            //add
+        $.ajax({
+            url: "/update-lead",
+            data: {
+                "leadid": "0",
+                "contact_hours_from": $("#datetimepicker3").val(),
+                "contact_hours_to": $("#datetimepicker3").val(),
+                "tags": $(".txttags").val(),
+                "details": $("textarea.txtdetails").val(),
+                "statusid": $("input[name='statusid']").val(),
+                "txttypeofevent": $("input[name='txttypeofevent']").val(),
+            },
+            type: 'POST',
+            success: function(response) {
+                console.log("update-lead");
+                var leadid = response.leadid;
+                //Add contacts
+                var contactids = $("input[name='contactids']").val();
+                var contacts = JSON.parse(contactids);
+
+                $.each(contacts, function(ii, contactid){
+                    $.ajax({
+                        url: "/add-lead-contact",
+                        data: {
+                            "leadid": leadid,
+                            "contactid": contactid,
+                        },
+                        type: 'POST',
+                        success: function(response) {
+
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    });
+                });
+
+                var assigneduserids = $("input[name='assigneduserids']").val();
+                var assignedusers = JSON.parse(assigneduserids);
+
+                $.each(assignedusers, function(ii, userid){
+                    $.ajax({
+                        url: "/add-lead-user",
+                        data: {
+                            "leadid": leadid,
+                            "userid": userid,
+                            "type": "ASSIGNED"
+                        },
+                        type: 'POST',
+                        success: function(response) {
+
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    });
+                });
+                
+                var followeruserids = $("input[name='followeruserids']").val();
+                var followerusers = JSON.parse(followeruserids);
+                
+                $.each(followerusers, function(ii, userid){
+                    $.ajax({
+                        url: "/add-lead-user",
+                        data: {
+                            "leadid": leadid,
+                            "userid": userid,
+                            "type": "FOLLOW"
+                        },
+                        type: 'POST',
+                        success: function(response) {
+                            
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    });
+                });
+                //location.reload();
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+    });
+
+    $("button.delete-lead").click(function(){
+        var id = $(this).attr("lead_id");
+        $.ajax({
+            url: "/delete-lead",
+            data: {
+                "lead_id": id
+            },
+            type:  'POST',
+            success: function (response) { 
+                console.log(response);
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    });
+});
+</script>
+<%- include('../partials/footer'); %>
+</body>
+</html>

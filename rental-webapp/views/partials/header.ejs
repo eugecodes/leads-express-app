@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <div style="display: inline-block;"><img src="/images/ITlogo-icon.jpg" width="30px" /></div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/"><i class="fas fa-chart-bar custom-fa"></i> Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/leads"><i class="fas fa-hands-helping custom-fa"></i> Leads</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/messages"><i class="fas fa-comments custom-fa"></i> Messages</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/venues"><i class="fas fa-city custom-fa"></i> Venues</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" href="/bookings" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-calendar-day custom-fa"></i> Bookings
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/bookings"><i class="fas fa-calendar-alt custom-fa"></i> All Bookings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/bookings"><i class="fas fa-hourglass-half custom-fa"></i> Appointments</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/bookings"><i class="fas fa-clock custom-fa"></i> Short-time Bookings</a></li>
+              <li><a class="dropdown-item" href="/bookings"><i class="fas fa-calendar-week custom-fa"></i> Long-time Bookings</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/proposals" tabindex="-1" aria-disabled="true"><i class="fas fa-file-alt custom-fa"></i>Proposals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/contracts" tabindex="-1" aria-disabled="true"><i class="fas fa-file-signature custom-fa"></i> Contracts</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a id="inv-navbar" class="nav-link active dropdown-toggle" href="/invoices" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-file-invoice-dollar custom-fa"></i> Invoices
+            </a>
+            <ul id="invoices-dropdown" class="dropdown-menu" aria-labelledby="inv-navbar">
+              <li><a class="dropdown-item" href="/invoices"><i class="fas fa-file custom-fa"></i> Invoices & Templates</a></li>
+              <li><a class="dropdown-item" href="/taxes"><i class="fas fa-cubes custom-fa"></i> Taxes</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/users" tabindex="-1" aria-disabled="true"><i class="fas fa-address-book custom-fa"></i> System Users</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+            <input id="s_term" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+            <button id="search_btn1" type="button" class="custom-btn" data-bs-toggle="modal" data-bs-target="#SearchModal">
+              <i class="fas fa-search"></i></button>
+            <!--<button class="btn btn-light" type="submit">Search</button>-->
+            <a id="logout" class="nav-link active me-2" style="color: white;" href="/logout">Logout</a>
+            <a href="#" role="button" class="popover-test" title="Popover title" data-content="Popover body content is set in this attribute."><img src="/images/user.png" width="40px" /></a>
+        </form>
+      </div>
+    </div>
+  </nav>
